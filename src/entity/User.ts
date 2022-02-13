@@ -5,9 +5,10 @@ import {
 import { IsEmail, IsIn } from 'class-validator';
 
 import bcrypt from '../utils/bcrypt';
+import AppError from '../error';
 
 @Entity()
-export default class UserModel {
+export default class UserEntity {
     @PrimaryGeneratedColumn('uuid')
       id!: string;
 
@@ -31,5 +32,12 @@ export default class UserModel {
     @BeforeInsert()
     async hashPassword() {
       this.password = await bcrypt.hashString(this.password);
+    }
+
+    async validatePassword(password: string, param: string = 'password') {
+      const isValidPassword = await bcrypt.compareString(password, this.password);
+      if (!isValidPassword) {
+        throw new AppError('Password provided does not match user', 'Authorization', { param, msg: 'Authentication failed, mismatched password' });
+      }
     }
 }
