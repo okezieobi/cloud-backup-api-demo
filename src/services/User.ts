@@ -54,7 +54,7 @@ export default class UserServices implements UserServicesParams {
       type: 'postgres',
       name: 'test',
       url: new Env().databaseURL,
-      ssl: true,
+      ssl: { rejectUnauthorized: false },
       synchronize: true,
       entities: [this.DAL.User.Entity],
     });

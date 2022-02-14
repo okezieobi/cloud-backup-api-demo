@@ -6,7 +6,7 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["es5", "es6"],
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
   "$schema": "https://json.schemastore.org/tsconfig",
