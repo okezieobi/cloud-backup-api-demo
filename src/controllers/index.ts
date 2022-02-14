@@ -39,4 +39,8 @@ export default abstract class Controller {
   dispatchResponse(req: Request, res: Response) {
     res.send({ status: 'success', ...res.locals[this.key] });
   }
+
+  static sendMediaResponse({ files }: Request, res: Response) {
+    res.status(201).send({ status: 'success', data: files });
+  }
 }

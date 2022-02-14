@@ -29,6 +29,7 @@ export default class UserServices implements UserServicesParams {
     this.repository = repository;
     this.signupUser = this.signupUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
+    this.authUser = this.authUser.bind(this);
   }
 
   async signupUser(arg: SignupParam) {
@@ -58,5 +59,20 @@ export default class UserServices implements UserServicesParams {
     const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
     return { message: 'Registered user successfully signed in', data: { ...userExists, password: undefined } };
+  }
+
+  static async validateId(id: string) {
+    const schema: JSONSchemaType<string> = {
+      $async: true,
+      type: 'string',
+      format: 'uuid',
+    };
+    return ajv.compile(schema)(id);
+  }
+
+  async authUser(id: string) {
+    await UserServices.validateId(id);
+    const repo = await (await this.repository.User());
+    return repo.findOneOrFail({ where: { id } });
   }
 }

@@ -4,9 +4,7 @@ import connection, { UserEntity } from '../entities';
 
 @EntityRepository(UserEntity)
 class UserRepository extends Repository<UserEntity> {
-  // async verifyPryKey(key: string) {
-  //   return this.findOneOrFail({ where: { id: key } });
-  // }
+  // methods not using entity fields come here
 }
 
 export default async () => {
