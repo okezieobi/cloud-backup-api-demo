@@ -30,14 +30,14 @@ export default class UserEntity {
     @PrimaryGeneratedColumn('uuid')
       id: string;
 
-    @Column({ unique: true, type: 'text' })
+    @Column({ unique: true, type: 'text', nullable: false })
     @IsEmail()
       email: string;
 
-    @Column('text')
+    @Column({ nullable: false, type: 'text' })
       name: string;
 
-    @Column('text')
+    @Column({ nullable: false, type: 'text' })
       password: string;
 
     @Column({ type: 'text' })
@@ -52,7 +52,7 @@ export default class UserEntity {
 
     @BeforeInsert()
     async hashPassword() {
-      this.password = await bcrypt.hashString(this.password);
+      if (this.password != null) this.password = await bcrypt.hashString(this.password);
     }
 
     @BeforeInsert()

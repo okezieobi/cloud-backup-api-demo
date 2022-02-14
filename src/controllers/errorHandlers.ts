@@ -40,7 +40,7 @@ const errorHandlers = {
       });
     } else next(err);
   },
-  handleSQLValidationErr(err: Error, req: Request, res: Response, next: NextFunction) {
+  handleSQLValidationErr(err: any, req: Request, res: Response, next: NextFunction) {
     if (err.constructor.name === 'QueryFailedError') {
       res.status(400);
       next({
@@ -48,7 +48,7 @@ const errorHandlers = {
         response: {
           status: errorMarkers.status,
           message: err.message,
-          data: { timestamp: errorMarkers.timestamp },
+          data: { ...err.driverError, timestamp: errorMarkers.timestamp },
         },
       });
     } else next(err);
@@ -73,16 +73,12 @@ const errorHandlers = {
         res.status(400);
         next({ isClient: errorMarkers.isClient, response: error });
         break;
-      case 'Payment':
-        res.status(400);
-        next({ isClient: errorMarkers.isClient, response: error });
-        break;
       case 'Query':
         res.status(404);
         next({ isClient: errorMarkers.isClient, response: error });
         break;
       case 'Validation':
-        res.status(409);
+        res.status(400);
         next({ isClient: errorMarkers.isClient, response: error });
         break;
       case 'Authorization':
