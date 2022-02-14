@@ -5,29 +5,50 @@ import {
 import { IsEmail, IsIn } from 'class-validator';
 
 import bcrypt from '../utils/bcrypt';
-import AppError from '../error';
+import AppError from '../errors';
 
 @Entity()
 export default class UserEntity {
+  constructor(
+    id: string,
+    email: string,
+    name: string,
+    role: string,
+    password: string,
+    createDate: Date,
+    updateDate: Date,
+  ) {
+    this.id = id;
+    this.email = email;
+    this.name = name;
+    this.role = role;
+    this.password = password;
+    this.createDate = createDate;
+    this.updateDate = updateDate;
+  }
+
     @PrimaryGeneratedColumn('uuid')
-      id!: string;
+      id: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: 'text' })
     @IsEmail()
-      email!: string;
+      email: string;
 
-    @Column()
-      password!: string;
+    @Column('text')
+      name: string;
 
-    @Column()
+    @Column('text')
+      password: string;
+
+  @Column({ default: 'client', type: 'text' })
     @IsIn(['client', 'admin'])
-      role!: string;
+    role: string;
 
-    @CreateDateColumn()
-      createDate!: Date;
+    @CreateDateColumn({ default: new Date() })
+      createDate: Date;
 
-    @UpdateDateColumn()
-      updateDate!: Date;
+    @UpdateDateColumn({ default: new Date() })
+      updateDate: Date;
 
     @BeforeInsert()
     async hashPassword() {
