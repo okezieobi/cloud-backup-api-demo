@@ -49,13 +49,13 @@ export default class UserServices implements UserServicesParams {
       required: ['email', 'password'],
       additionalProperties: false,
     };
-    return schema.compile(arg);
+    return ajv.compile(schema)(arg);
   }
 
   async loginUser({ email, password }: LoginParams) {
     await UserServices.validateLoginArg({ email, password });
     const repo = await (await this.repository.User());
-    const userExists = await repo.verifyEmail(email);
+    const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
     return { message: 'Registered user successfully signed in', data: { ...userExists, password: undefined } };
   }

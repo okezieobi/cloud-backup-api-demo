@@ -40,6 +40,20 @@ const errorHandlers = {
       });
     } else next(err);
   },
+  handleEntityNotFoundErr(err: any, req: Request, res: Response, next: NextFunction) {
+    if (err.constructor.name === 'EntityNotFoundError') {
+      res.status(404);
+      const errMsg:string = err.message.replace(/\s+/g, ' ');
+      next({
+        isClient: errorMarkers.isClient,
+        response: {
+          status: errorMarkers.status,
+          message: errMsg.replace(/[^\w\s]/gi, '').trim(),
+          data: { timestamp: errorMarkers.timestamp },
+        },
+      });
+    } else next(err);
+  },
   handleSQLValidationErr(err: any, req: Request, res: Response, next: NextFunction) {
     if (err.constructor.name === 'QueryFailedError') {
       res.status(400);
@@ -53,8 +67,8 @@ const errorHandlers = {
       });
     } else next(err);
   },
-  handleValidationError(err: Error, req: Request, res: Response, next: NextFunction) {
-    if (err.constructor.name === 'ValidationError' || err.name === 'ValidationError') {
+  handleAJVError(err: Error, req: Request, res: Response, next: NextFunction) {
+    if (err.constructor.name === 'ValidationError') {
       res.status(400);
       next({
         isClient: errorMarkers.isClient,
