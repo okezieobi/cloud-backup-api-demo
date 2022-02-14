@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { EntityNotFoundError, QueryFailedError } from 'typeorm';
+import { MulterError } from 'multer';
 
 import AppError from '../errors';
 
@@ -41,7 +43,7 @@ const errorHandlers = {
     } else next(err);
   },
   handleEntityNotFoundErr(err: any, req: Request, res: Response, next: NextFunction) {
-    if (err.constructor.name === 'EntityNotFoundError') {
+    if (err instanceof EntityNotFoundError) {
       res.status(404);
       const errMsg:string = err.message.replace(/\s+/g, ' ');
       next({
@@ -54,8 +56,21 @@ const errorHandlers = {
       });
     } else next(err);
   },
+  handleMulterErr(err: any, req: Request, res: Response, next: NextFunction) {
+    if (err instanceof MulterError) {
+      res.status(400);
+      next({
+        isClient: errorMarkers.isClient,
+        response: {
+          status: errorMarkers.status,
+          message: err.message,
+          data: { ...err, timestamp: errorMarkers.timestamp },
+        },
+      });
+    } else next(err);
+  },
   handleSQLValidationErr(err: any, req: Request, res: Response, next: NextFunction) {
-    if (err.constructor.name === 'QueryFailedError') {
+    if (err instanceof QueryFailedError) {
       res.status(400);
       next({
         isClient: errorMarkers.isClient,
