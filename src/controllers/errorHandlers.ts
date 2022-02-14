@@ -81,7 +81,7 @@ const errorHandlers = {
         res.status(404);
         next({ isClient: errorMarkers.isClient, response: error });
         break;
-      case 'Conflict':
+      case 'Validation':
         res.status(409);
         next({ isClient: errorMarkers.isClient, response: error });
         break;
