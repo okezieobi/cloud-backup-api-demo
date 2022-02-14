@@ -40,8 +40,21 @@ const errorHandlers = {
       });
     } else next(err);
   },
+  handleSQLValidationErr(err: Error, req: Request, res: Response, next: NextFunction) {
+    if (err.constructor.name === 'QueryFailedError') {
+      res.status(400);
+      next({
+        isClient: errorMarkers.isClient,
+        response: {
+          status: errorMarkers.status,
+          message: err.message,
+          data: { timestamp: errorMarkers.timestamp },
+        },
+      });
+    } else next(err);
+  },
   handleValidationError(err: Error, req: Request, res: Response, next: NextFunction) {
-    if (err.constructor.name === 'ValidationError' || err.name === 'ValidationError' || err.name === 'CastError') {
+    if (err.constructor.name === 'ValidationError' || err.name === 'ValidationError') {
       res.status(400);
       next({
         isClient: errorMarkers.isClient,

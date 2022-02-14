@@ -1,10 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
 
-import UserEntity from '../entities/User';
+import connection, { UserEntity } from '../entities';
 import AppError from '../errors';
 
 @EntityRepository(UserEntity)
-export default class UserRepository extends Repository<UserEntity> {
+class UserRepository extends Repository<UserEntity> {
   async verifyPryKey(key: string) {
     const user = await this.findOneOrFail({ where: { id: key } });
     if (user == null) {
@@ -21,3 +21,8 @@ export default class UserRepository extends Repository<UserEntity> {
     return user;
   }
 }
+
+export default async () => {
+  const resolvedConnection = await (await connection());
+  return resolvedConnection.getCustomRepository(UserRepository);
+};
