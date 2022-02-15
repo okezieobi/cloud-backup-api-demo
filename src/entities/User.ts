@@ -65,7 +65,6 @@ export default class UserEntity {
     }
 
     async validatePassword(password: string, param: string = 'password') {
-      console.log(this.password);
       const isValidPassword = await bcrypt.compareString(password, this.password);
       if (!isValidPassword) {
         throw new AppError('Password provided does not match user', 'Authorization', { param, msg: 'Authentication failed, mismatched password' });
