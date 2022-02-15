@@ -7,7 +7,6 @@ paths:
       security:
        - headerAuth: []
       requestBody:
-        required: true
         content:
           multipart/form-data:
             schema:

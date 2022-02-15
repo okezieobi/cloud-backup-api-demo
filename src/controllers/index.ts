@@ -17,7 +17,7 @@ interface ServiceResult {
 export default abstract class Controller {
   key: string;
 
-  constructor(key: string) {
+  constructor(key: string = 'main') {
     this.dispatchResponse = this.dispatchResponse.bind(this);
     this.handleService = this.handleService.bind(this);
     this.key = key;
@@ -41,7 +41,9 @@ export default abstract class Controller {
   }
 
   static sendMediaResponse({ files }: Request, res: Response, next: NextFunction) {
-    if (files!.length === 0) next({ isClient: true, response: { message: 'At least one file is required' } });
-    else res.status(201).send({ status: 'success', data: files });
+    if (files!.length === 0) {
+      res.status(400);
+      next({ isClient: true, response: { status: 'error', message: 'At least one file is required', data: { timestamp: new Date() } } });
+    } else res.status(201).send({ status: 'success', message: 'File uploaded successfully', data: files });
   }
 }
