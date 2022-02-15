@@ -59,6 +59,7 @@
     "@types/cors": "latest",
     "@types/debug": "latest",
     "@types/express": "latest",
+    "@types/jest": "^27.4.0",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/morgan": "latest",
     "@types/multer": "^1.4.7",
@@ -72,6 +73,9 @@
     "eslint": "^8.8.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
+    "jest": "^27.5.1",
+    "jest-cli": "^27.5.1",
+    "jest-extended": "^2.0.0",
     "nodemon": "latest",
     "typescript": "latest"
   }
