@@ -13,8 +13,6 @@ jobs:
       max-parallel: 1
       matrix:
         node-version: [16.x]
-        postgresql-version: [12.x]
-
     steps:
     - uses: actions/checkout@v2
     - name: Run build-then-test ${{ matrix.node-version }}
