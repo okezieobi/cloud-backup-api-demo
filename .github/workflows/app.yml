@@ -23,7 +23,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - uses: Harmon758/postgresql-action@v1.0.0
       with:
-        postgresql-version: ${{ matrix.postgresql-version }}
+        # Version of PostgreSQL to use
+        postgresql version: # optional, default is latest
+        # POSTGRES_DB - name for the default database that is created
+        postgresql db: # optional, default is 
+        # POSTGRES_USER - create the specified user with superuser power
+        postgresql user: # optional, default is 
+        # POSTGRES_PASSWORD - superuser password
+        postgresql password: # optional, default is 
     - run: npm ci
     - run: npm run coverage:codacy-in-ci
       env:
