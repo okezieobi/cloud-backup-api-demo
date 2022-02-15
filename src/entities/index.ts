@@ -9,6 +9,7 @@ export default async () => {
   const options: ConnectionOptions = {
     type: 'postgres',
     url: new Env().databaseURL,
+    ssl: { rejectUnauthorized: false },
     synchronize: true,
     dropSchema: process.env.NODE_ENV === 'development',
     entities: [UserEntity],
