@@ -1,4 +1,4 @@
-name: Tivin app CI
+name: cloud backup api demo CI
 
 on:
   push:
