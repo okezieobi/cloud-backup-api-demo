@@ -34,7 +34,8 @@ describe('User tests', () => {
   beforeAll(async () => {
     const repo = await (await userRepositories());
     await repo.clear();
-    await repo.insert(user);
+    const registeredUser = repo.create(user);
+    repo.save(registeredUser);
   });
 
   describe('Testing new user creation', () => {
