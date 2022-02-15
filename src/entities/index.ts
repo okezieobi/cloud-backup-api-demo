@@ -8,7 +8,6 @@ export default async () => {
   let connection;
   const options: ConnectionOptions = {
     type: 'postgres',
-    name: 'test',
     url: new Env().databaseURL,
     ssl: { rejectUnauthorized: false },
     synchronize: true,
@@ -16,7 +15,7 @@ export default async () => {
     entities: [UserEntity],
   };
   try {
-    connection = await getConnection('test');
+    connection = await getConnection();
   } catch (e) {
     connection = await createConnection(options);
   }

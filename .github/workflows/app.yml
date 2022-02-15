@@ -31,7 +31,7 @@ jobs:
         postgresql password: ${{ secrets.DB_PASSWORD }} # optional, default is 
     - run: sudo service postgresql start
     - run: npm ci
-    - run: npm test
+    - run: npm run coverage:codacy-in-ci
       env:
         TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
