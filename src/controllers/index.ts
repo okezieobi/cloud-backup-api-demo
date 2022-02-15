@@ -40,7 +40,8 @@ export default abstract class Controller {
     res.send({ status: 'success', ...res.locals[this.key] });
   }
 
-  static sendMediaResponse({ files }: Request, res: Response) {
-    res.status(201).send({ status: 'success', data: files });
+  static sendMediaResponse({ files }: Request, res: Response, next: NextFunction) {
+    if (files!.length === 0) next({ isClient: true, response: { message: 'At least one file is required' } });
+    else res.status(201).send({ status: 'success', data: files });
   }
 }

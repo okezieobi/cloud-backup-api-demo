@@ -24,6 +24,9 @@ components:        # Schema definition for request body
   create-media:
     type: object
     properties:
+      folder:
+        type: string
+        example: 'test'
       media:
         type: array
         items:

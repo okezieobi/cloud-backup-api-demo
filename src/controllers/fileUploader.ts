@@ -12,10 +12,10 @@ v2.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: v2,
-  params: {
-    folder: 'folder',
-    allowed_formats: ['png', 'jpeg', 'jpg', 'gif', 'bmp'],
-  },
+  // eslint-disable-next-line no-unused-vars
+  params: async ({ body: { folder = 'default' } }, file) => ({
+    folder,
+  }),
 });
 
 export default multer({
