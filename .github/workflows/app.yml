@@ -24,12 +24,13 @@ jobs:
         # Version of PostgreSQL to use
         postgresql version: 12 # optional, default is latest
         # POSTGRES_DB - name for the default database that is created
-        postgresql db: ${{ secrets.POSTGRES_DB }} # optional, default is 
+        postgresql db:  # optional, default is 
         # POSTGRES_USER - create the specified user with superuser power
-        postgresql user: ${{ secrets.POSTGRES_USER }} # optional, default is 
+        postgresql user: # optional, default is 
         # POSTGRES_PASSWORD - superuser password
-        postgresql password: ${{ secrets.POSTGRES_PASSWORD }} # optional, default is 
+        postgresql password: # optional, default is 
     - run: npm ci
+    - run:  sudo service postgresql start
     - run: npm run coverage:codacy-in-ci
       env:
         TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
