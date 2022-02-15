@@ -19,6 +19,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - uses: Harmon758/postgresql-action@v1.0.0
+      with:
+        # Version of PostgreSQL to use
+        postgresql version: '12' # optional, default is latest
+        # POSTGRES_DB - name for the default database that is created
+        postgresql db: 'cloud-backup-api-test'  # optional, default is 
+        # POSTGRES_USER - create the specified user with superuser power
+        postgresql user: 'assessment' # optional, default is 
+        # POSTGRES_PASSWORD - superuser password
+        postgresql password: ${{ secrets.DB_PASSWORD }} # optional, default is 
+    - run: sudo service postgresql start
     - run: npm ci
     - run: npm run coverage:codacy-in-ci
       env:
