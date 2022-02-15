@@ -2,10 +2,10 @@ import Ajv, { JSONSchemaType } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import ajvFormats from 'ajv-formats';
 
-import UserRepository from '../repositories/User';
+import userRepository from '../repositories/user';
 
 interface UserServicesParams {
-    repository: { User: typeof UserRepository };
+    repository: { user: typeof userRepository };
 }
 
 interface LoginParams {
@@ -23,9 +23,9 @@ ajvFormats(ajv);
 ajvKeywords(ajv);
 
 export default class UserServices implements UserServicesParams {
-  repository: { User: typeof UserRepository };
+  repository: { user: typeof userRepository };
 
-  constructor(repository = { User: UserRepository }) {
+  constructor(repository = { user: userRepository }) {
     this.repository = repository;
     this.signupUser = this.signupUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
@@ -33,7 +33,7 @@ export default class UserServices implements UserServicesParams {
   }
 
   async signupUser(arg: SignupParam) {
-    const repo = await (await this.repository.User());
+    const repo = await (await this.repository.user());
     const newUser = repo.create(arg);
     await repo.save(newUser);
     return { message: 'New user successfully signed up', data: { ...newUser, password: undefined } };
@@ -55,7 +55,7 @@ export default class UserServices implements UserServicesParams {
 
   async loginUser({ email, password }: LoginParams) {
     await UserServices.validateLoginArg({ email, password });
-    const repo = await (await this.repository.User());
+    const repo = await (await this.repository.user());
     const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
     return { message: 'Registered user successfully signed in', data: { ...userExists, password: undefined } };
@@ -72,7 +72,7 @@ export default class UserServices implements UserServicesParams {
 
   async authUser(id: string) {
     await UserServices.validateId(id);
-    const repo = await (await this.repository.User());
+    const repo = await (await this.repository.user());
     return repo.findOneOrFail({ where: { id } });
   }
 }

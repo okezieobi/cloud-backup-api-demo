@@ -9,7 +9,14 @@
     "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && npm run build-app",
     "build-app": "babel src -s -d dist --extensions '.ts,.tsx'",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test": "NODE_ENV=testing jest '--runInBand'",
+    "test-single": "NODE_ENV=testing jest src/tests/*.test.js",
+    "coverage": "npm run test -- '--coverage'",
+    "coverage:codacy": "npm run coverage && cp -R coverage .github/workflows/coverage/",
+    "test-in-ci": "NODE_ENV=testing-in-ci jest '--runInBand'",
+    "coverage-in-ci": "npm run test-in-ci -- '--coverage'",
+    "coverage:codacy-in-ci": "npm run coverage-in-ci && cp -R coverage .github/workflows/coverage/"
   },
   "repository": {
     "type": "git",
