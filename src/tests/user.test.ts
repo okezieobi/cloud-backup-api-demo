@@ -34,7 +34,7 @@ describe('User tests', () => {
   beforeAll(async () => {
     const repo = await (await userRepositories());
     await repo.clear();
-    await repo.save(user);
+    await repo.insert(user);
   });
 
   describe('Testing new user creation', () => {
@@ -51,29 +51,29 @@ describe('User tests', () => {
       expect(data.email).toBeString();
       expect(data.email).toEqual(newUser.email);
       expect(data.role).toBeString();
-      expect(data.role).toEqual('Client');
-      expect(data.createDate).toBeString();
-      expect(data.updateDate).toBeString();
+      expect(data.role).toEqual('client');
+      expect(data.createDate).toBeDate();
+      expect(data.updateDate).toBeDate();
     });
   });
 
   describe('Testing registered user signing in', () => {
     it('Signs in registered user', async () => {
       const { loginUser } = new UserServices();
-      const { message, data } = await loginUser(user);
+      const { message, data } = await loginUser({ email: user.email, password: user.password });
       expect(message).toBeString();
       expect(message).toEqual('Registered user successfully signed in');
       expect(data).toBeObject();
       expect(data).toContainKeys(['name', 'email', 'id', 'role', 'createDate', 'updateDate']);
       expect(data.id).toBeString();
       expect(data.name).toBeString();
-      expect(data.name).toEqual(newUser.name);
+      expect(data.name).toEqual(user.name);
       expect(data.email).toBeString();
-      expect(data.email).toEqual(newUser.email);
+      expect(data.email).toEqual(user.email);
       expect(data.role).toBeString();
-      expect(data.role).toEqual('Client');
-      expect(data.createDate).toBeString();
-      expect(data.updateDate).toBeString();
+      expect(data.role).toEqual('client');
+      expect(data.createDate).toBeDate();
+      expect(data.updateDate).toBeDate();
     });
   });
 });

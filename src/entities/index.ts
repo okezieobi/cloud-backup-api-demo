@@ -12,7 +12,7 @@ export default async () => {
     url: new Env().databaseURL,
     ssl: { rejectUnauthorized: false },
     synchronize: true,
-    dropSchema: true,
+    dropSchema: process.env.NODE_ENV === 'development',
     entities: [UserEntity],
   };
   try {

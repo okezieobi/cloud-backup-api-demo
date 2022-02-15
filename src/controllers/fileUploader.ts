@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
   cloudinary: v2,
   // eslint-disable-next-line no-unused-vars
   params: async ({ body: { folder = 'default' } }, file) => ({
-    folder,
+    folder: `cloud-api-demo/${folder}`,
   }),
 });
 

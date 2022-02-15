@@ -40,14 +40,14 @@ export default class UserEntity {
     @Column({ nullable: false, type: 'text' })
       password: string;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', default: 'client' })
     @IsIn(['client', 'admin'])
       role: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ default: new Date() })
       createDate: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ default: new Date() })
       updateDate: Date;
 
     @BeforeInsert()
@@ -65,6 +65,7 @@ export default class UserEntity {
     }
 
     async validatePassword(password: string, param: string = 'password') {
+      console.log(this.password);
       const isValidPassword = await bcrypt.compareString(password, this.password);
       if (!isValidPassword) {
         throw new AppError('Password provided does not match user', 'Authorization', { param, msg: 'Authentication failed, mismatched password' });
