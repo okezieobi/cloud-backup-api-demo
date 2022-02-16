@@ -1,4 +1,4 @@
-name: Tivin app CI
+name: cloud backup api demo CI
 
 on:
   push:
@@ -13,11 +13,9 @@ jobs:
       max-parallel: 1
       matrix:
         node-version: [16.x]
-        postgresql-version: [12.x]
-
     steps:
     - uses: actions/checkout@v2
-    - name: Run build-then-test ${{ matrix.node-version }}
+    - name: Run build-node-app-then-test ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
