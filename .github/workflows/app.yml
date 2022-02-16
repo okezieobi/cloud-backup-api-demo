@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run build-node-app-then-test ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
     - uses: Daniel-Marynicz/postgresql-action@1.0.0
@@ -52,7 +52,7 @@ jobs:
         CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
         FLUTTERWAVE_SECRET_KEY_TESTING: ${{ secrets.FLUTTERWAVE_SECRET_KEY_TESTING }}
 
-    - uses: codacy/codacy-coverage-reporter-action@v1.1.0
+    - uses: codacy/codacy-coverage-reporter-action@v1.3.0
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: coverage/lcov.info
@@ -74,7 +74,7 @@ jobs:
         # The root folder of the project that originally ran the tests
     #     base-path: # optional
 
-    - uses: codecov/codecov-action@v2.0.2
+    - uses: codecov/codecov-action@v2.1.0
       with:
         # Repository upload token - get it from codecov.io. Required only for private repositories
         token: # optional
