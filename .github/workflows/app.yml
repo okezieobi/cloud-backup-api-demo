@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-then-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-lts
     strategy:
       max-parallel: 1
       matrix:
@@ -30,7 +30,7 @@ jobs:
         # POSTGRES_DB - postgres database
         postgres_db: cloud-backup-api-test # optional, default is postgres
         # POSTGRES_PASSWORD - superuser password
-        postgres_password: ${{ secrets.DB_PASSWORD }} # optional
+        postgres_password: lovely # optional
         # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
         postgres_extensions: # optional
         # APP_USER - unprivileged postgres user
