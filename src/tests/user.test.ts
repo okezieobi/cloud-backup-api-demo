@@ -32,7 +32,6 @@ describe('User tests', () => {
   };
 
   beforeAll(async () => {
-    if (process.env.NODE_ENV === 'testing-in-ci') jest.useRealTimers();
     const repo = await (await userRepositories());
     await repo.clear();
     const registeredUser = repo.create(user);
@@ -41,7 +40,6 @@ describe('User tests', () => {
 
   describe('Testing new user creation', () => {
     it('Should create new user', async () => {
-      if (process.env.NODE_ENV === 'testing-in-ci') jest.useFakeTimers('legacy');
       const { signupUser } = new UserServices();
       const { message, data } = await signupUser(newUser);
       expect(message).toBeString();
@@ -62,7 +60,6 @@ describe('User tests', () => {
 
   describe('Testing registered user signing in', () => {
     it('Signs in registered user', async () => {
-      if (process.env.NODE_ENV === 'testing-in-ci') jest.useFakeTimers('legacy');
       const { loginUser } = new UserServices();
       const { message, data } = await loginUser({ email: user.email, password: user.password });
       expect(message).toBeString();
