@@ -1,7 +1,7 @@
 import userRepositories from '../repositories/user';
 import UserServices from '../services/User';
 
-// if (process.env.NODE_ENV === 'testing-in-ci') jest.useFakeTimers('legacy');
+if (process.env.NODE_ENV === 'testing-in-ci') jest.useFakeTimers('legacy');
 
 describe('User tests', () => {
   const user = {
