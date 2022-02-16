@@ -21,18 +21,27 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: m4nu56/postgresql-action@1.0
+    - uses: Daniel-Marynicz/postgresql-action@1.0.0
       with:
-        # Version of PostgreSQL to use
-        postgresql version: '12' # optional, default is latest
-        # POSTGRES_DB - name for the default database that is created
-        postgresql db: cloud-backup-api-test # optional, default is 
-        # POSTGRES_USER - create the specified user with superuser power
-        postgresql user: assessment # optional, default is 
+        # Docker postgres image tag for available image tags please see https://hub.docker.com/_/postgres
+        postgres_image_tag: 12 # optional, default is latest
+        # Docker postgres image name if not using https://hub.docker.com/_/postgres
+        postgres_image_name: postgres # optional, default is postgres
+        # POSTGRES_USER - create the user with the superuser power
+        postgres_user: assessment # optional, default is postgres
+        # POSTGRES_DB - postgres database
+        postgres_db: cloud-backup-api-test # optional, default is postgres
         # POSTGRES_PASSWORD - superuser password
-        postgresql password: ${{ secrets.DB_PASSWORD }} # optional, default is 
-        # POSTGRES_INIT_SCRIPTS - directory containing DB init scripts
-        postgresql init scripts: # optional, default is 
+        postgres_password: ${{ secrets.DB_PASSWORD }} # optional
+        # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
+        postgres_extensions: # optional
+        # APP_USER - unprivileged postgres user
+        app_user: # optional, default is app
+        # APP_PASSWORD_USER - password for unprivileged postgres user
+        app_user_password: # optional, default is app
+        # APP_DB - database or list of databases separated by space for unprivileged postgres user
+        app_db: # optional, default is app
+        # EXPOSED_POSTGRES_PORT - exposed postgres port
     - run: npm ci
     - run: sudo service postgresql start
     - run: npm run coverage:codacy-in-ci
