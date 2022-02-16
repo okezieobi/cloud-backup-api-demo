@@ -15,15 +15,34 @@ jobs:
         node-version: [16.x]
     steps:
     - uses: actions/checkout@v2
-    - name: Run build-node-app-then-test ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+    - name: Run build-then-test ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: sudo apt install postgresql postgresql-contrib
+    - uses: Daniel-Marynicz/postgresql-action@1.0.0
+      with:
+        # Docker postgres image tag for available image tags please see https://hub.docker.com/_/postgres
+        postgres_image_tag: 12 # optional, default is latest
+        # Docker postgres image name if not using https://hub.docker.com/_/postgres
+        postgres_image_name: postgres # optional, default is postgres
+        # POSTGRES_USER - create the user with the superuser power
+        postgres_user: assessment # optional, default is postgres
+        # POSTGRES_DB - postgres database
+        postgres_db: cloud-backup-api-test # optional, default is postgres
+        # POSTGRES_PASSWORD - superuser password
+        postgres_password: ${{ secrets.DB_PASSWORD }} # optional
+        # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
+        postgres_extensions: # optional
+        # APP_USER - unprivileged postgres user
+        app_user: # optional, default is app
+        # APP_PASSWORD_USER - password for unprivileged postgres user
+        app_user_password: # optional, default is app
+        # APP_DB - database or list of databases separated by space for unprivileged postgres user
+        app_db: # optional, default is app
+        # EXPOSED_POSTGRES_PORT - exposed postgres port
+        exposed_postgres_port: # optional, default is 5432
     - run: sudo service postgresql start
-    - run: sudo -u postgres createuser assessment -w -s -e
-    - run: sudo -u postgres createdb cloud-backup-api-test
+    - run: npm ci
     - run: npm run coverage:codacy-in-ci
       env:
         TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
@@ -31,9 +50,8 @@ jobs:
         CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-        FLUTTERWAVE_SECRET_KEY_TESTING: ${{ secrets.FLUTTERWAVE_SECRET_KEY_TESTING }}
 
-    - uses: codacy/codacy-coverage-reporter-action@v1.3.0
+    - uses: codacy/codacy-coverage-reporter-action@v1.1.0
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: coverage/lcov.info
@@ -55,7 +73,7 @@ jobs:
         # The root folder of the project that originally ran the tests
     #     base-path: # optional
 
-    - uses: codecov/codecov-action@v2.1.0
+    - uses: codecov/codecov-action@v2.0.2
       with:
         # Repository upload token - get it from codecov.io. Required only for private repositories
         token: # optional
