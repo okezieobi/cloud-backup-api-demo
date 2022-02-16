@@ -1,12 +1,12 @@
-import userRepositories from '../repositories/user';
+// import userRepositories from '../repositories/user';
 import UserServices from '../services/User';
 
 describe('User tests', () => {
-  const user = {
-    name: 'test-username',
-    email: 'test@email.com',
-    password: 'test-password',
-  };
+  // const user = {
+  //   name: 'test-username',
+  //   email: 'test@email.com',
+  //   password: 'test-password',
+  // };
 
   //   const userReq = {
   //     email: 'test@email.com',
