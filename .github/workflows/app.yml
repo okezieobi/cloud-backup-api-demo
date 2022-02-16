@@ -22,6 +22,7 @@ jobs:
     - run: npm ci
     - run: sudo apt install postgresql postgresql-contrib
     - run: sudo service postgresql start
+    - run: sudo -u postgres createuser assessment -w -s -e
     - run: sudo -u postgres createdb cloud-backup-api-test
     - run: npm run coverage:codacy-in-ci
       env:
