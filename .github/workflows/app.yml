@@ -26,19 +26,19 @@ jobs:
         # Docker postgres image name if not using https://hub.docker.com/_/postgres
         postgres_image_name: postgres # optional, default is postgres
         # POSTGRES_USER - create the user with the superuser power
-        postgres_user: # optional, default is postgres
+        postgres_user: assessment # optional, default is postgres
         # POSTGRES_DB - postgres database
-        postgres_db: # optional, default is postgres
+        postgres_db: cloud-backup-api-test # optional, default is postgres
         # POSTGRES_PASSWORD - superuser password
-        postgres_password: # optional
+        postgres_password: ${{ secrets.DB_PASSWORD }} # optional
         # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
         postgres_extensions: # optional
         # APP_USER - unprivileged postgres user
-        app_user: assessment # optional, default is app
+        app_user: # optional, default is app
         # APP_PASSWORD_USER - password for unprivileged postgres user
-        app_user_password: ${{ secrets.DB_PASSWORD }} # optional, default is app
+        app_user_password: # optional, default is app
         # APP_DB - database or list of databases separated by space for unprivileged postgres user
-        app_db: cloud-backup-api-test # optional, default is app
+        app_db: # optional, default is app
         # EXPOSED_POSTGRES_PORT - exposed postgres port
         exposed_postgres_port: # optional, default is 5432
     - run: sudo service postgresql start
