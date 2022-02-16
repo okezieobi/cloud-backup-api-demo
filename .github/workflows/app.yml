@@ -26,9 +26,9 @@ jobs:
         # POSTGRES_DB - name for the default database that is created
         postgresql db: 'cloud-backup-api-test'  # optional, default is 
         # POSTGRES_USER - create the specified user with superuser power
-        postgresql user: # optional, default is 
+        postgresql user: 'assessment' # optional, default is 
         # POSTGRES_PASSWORD - superuser password
-        postgresql password: # optional, default is 
+        postgresql password: ${{ secrets.DB_PASSWORD }} # optional, default is 
     - run: sudo service postgresql start
     - run: npm ci
     - run: npm run coverage:codacy-in-ci
