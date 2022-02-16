@@ -31,8 +31,6 @@ describe('User tests', () => {
     password: 'test-password',
   };
 
-  jest.setTimeout(10000);
-
   beforeAll(async () => {
     const repo = await (await userRepositories());
     await repo.clear();
