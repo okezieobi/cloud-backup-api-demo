@@ -2,6 +2,7 @@ import userRepositories from '../repositories/user';
 import UserServices from '../services/User';
 
 describe('User tests', () => {
+  jest.setTimeout(10000);
   const user = {
     name: 'test-username',
     email: 'test@email.com',
