@@ -45,7 +45,7 @@
     "morgan": "latest",
     "multer": "^1.4.4",
     "multer-storage-cloudinary": "^4.0.0",
-    "pg": "^8.7.3",
+    "pg": "^7.18.2",
     "swagger-jsdoc": "latest",
     "swagger-ui-express": "latest",
     "typeorm": "^0.2.41",
