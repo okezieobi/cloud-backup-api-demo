@@ -19,16 +19,28 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: Harmon758/postgresql-action@v1.0.0
+    - uses: Daniel-Marynicz/postgresql-action@1.0.0
       with:
-        # Version of PostgreSQL to use
-        postgresql version: '9' # optional, default is latest
-        # POSTGRES_DB - name for the default database that is created
-        postgresql db: 'cloud-backup-api-test'  # optional, default is 
-        # POSTGRES_USER - create the specified user with superuser power
-        postgresql user: 'assessment' # optional, default is 
+        # Docker postgres image tag for available image tags please see https://hub.docker.com/_/postgres
+        postgres_image_tag: # optional, default is latest
+        # Docker postgres image name if not using https://hub.docker.com/_/postgres
+        postgres_image_name: # optional, default is postgres
+        # POSTGRES_USER - create the user with the superuser power
+        postgres_user: # optional, default is postgres
+        # POSTGRES_DB - postgres database
+        postgres_db: # optional, default is postgres
         # POSTGRES_PASSWORD - superuser password
-        postgresql password: ${{ secrets.DB_PASSWORD }} # optional, default is 
+        postgres_password: # optional
+        # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
+        postgres_extensions: # optional
+        # APP_USER - unprivileged postgres user
+        app_user: # optional, default is app
+        # APP_PASSWORD_USER - password for unprivileged postgres user
+        app_user_password: # optional, default is app
+        # APP_DB - database or list of databases separated by space for unprivileged postgres user
+        app_db: # optional, default is app
+        # EXPOSED_POSTGRES_PORT - exposed postgres port
+        exposed_postgres_port: # optional, default is 5432
     - run: sudo service postgresql start
     - run: npm ci
     - run: npm run coverage:codacy-in-ci
