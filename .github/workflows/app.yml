@@ -41,6 +41,7 @@ jobs:
         app_db: # optional, default is app
         # EXPOSED_POSTGRES_PORT - exposed postgres port
         exposed_postgres_port: # optional, default is 5432
+    - run: sudo service postgresql start
     - run: npm ci
     - run: npm run coverage:codacy-in-ci
       env:
