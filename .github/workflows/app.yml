@@ -34,7 +34,7 @@ jobs:
         # POSTGRES_INIT_SCRIPTS - directory containing DB init scripts
         postgresql init scripts: # optional, default is 
     - run: npm ci
-    - run: sudo service postgresql status
+    - run: sudo service postgresql start
     - run: npm run coverage:codacy-in-ci
       env:
         TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
