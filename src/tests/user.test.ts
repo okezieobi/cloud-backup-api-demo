@@ -1,8 +1,6 @@
 import userRepositories from '../repositories/user';
 import UserServices from '../services/User';
 
-if (process.env.NODE_ENV === 'testing-in-ci') jest.useRealTimers();
-
 describe('User tests', () => {
   const user = {
     name: 'test-username',
