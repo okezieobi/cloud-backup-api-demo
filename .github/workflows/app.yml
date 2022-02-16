@@ -30,7 +30,7 @@ jobs:
         # POSTGRES_DB - postgres database
         postgres_db: cloud-backup-api-test # optional, default is postgres
         # POSTGRES_PASSWORD - superuser password
-        postgres_password: lovely # optional
+        postgres_password: ${{ secrets.DB_PASSWORD }} # optional
         # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
         postgres_extensions: # optional
         # APP_USER - unprivileged postgres user
@@ -45,7 +45,7 @@ jobs:
     - run: sudo service postgresql status
     - run: npm run coverage:codacy-in-ci
       env:
-        TEST_DATABASE_URL: postgresql://assessment:lovely@localhost:5432/cloud-backup-api-test
+        TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
         CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
