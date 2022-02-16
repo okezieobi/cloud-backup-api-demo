@@ -34,11 +34,11 @@ jobs:
         # POSTGRES_EXTENSIONS - List of postgres extensions separated by space to install in template1 database
         postgres_extensions: # optional
         # APP_USER - unprivileged postgres user
-        app_user: # optional, default is app
+        app_user: assessment # optional, default is app
         # APP_PASSWORD_USER - password for unprivileged postgres user
-        app_user_password: # optional, default is app
+        app_user_password: ${{ secrets.DB_PASSWORD }} # optional, default is app
         # APP_DB - database or list of databases separated by space for unprivileged postgres user
-        app_db: # optional, default is app
+        app_db: cloud-backup-api-test # optional, default is app
         # EXPOSED_POSTGRES_PORT - exposed postgres port
         exposed_postgres_port: # optional, default is 5432
     - run: sudo service postgresql start
