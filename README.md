@@ -16,6 +16,24 @@ A simple REST API for  cloud backup app
 
 <https://cloud-backup-api-test.herokuapp.com/>
 
+## Completed tasks
+
+### Simple Mode
+
+- Users can create an account with:
+  - email address
+  - password
+  - full name
+- Users can upload files up to 200mb
+- Users can download uploaded files
+- Users can create folders to hold files
+
+### Hard Mode
+
+- An admin user type for managing the content uploaded
+- Admins can mark pictures and videos as unsafe
+- Unsafe files automatically get deleted
+
 ## Tech stack
 
-NodeJS/TypeScript, ExpressJS, Cloudinary, PostgreSQL, Redis
+NodeJS/TypeScript, ExpressJS, Cloudinary, PostgreSQL,
