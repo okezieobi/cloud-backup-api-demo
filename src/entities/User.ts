@@ -2,7 +2,7 @@ import {
   Entity, PrimaryGeneratedColumn, Column, BeforeUpdate,
   CreateDateColumn, UpdateDateColumn, BeforeInsert,
 } from 'typeorm';
-import { IsEmail, IsIn, validate } from 'class-validator';
+import { IsEmail, IsIn, validateOrReject } from 'class-validator';
 
 import bcrypt from '../utils/bcrypt';
 import AppError from '../errors';
@@ -58,10 +58,7 @@ export default class UserEntity {
     @BeforeInsert()
     @BeforeUpdate()
     async validateFields() {
-      const errors = await validate(this);
-      if (errors.length > 0) {
-        throw new AppError('Validation failed', 'Validation', { errors });
-      }
+      return validateOrReject(this);
     }
 
     async validatePassword(password: string, param: string = 'password') {

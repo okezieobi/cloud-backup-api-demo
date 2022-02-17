@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
+import { ValidationError } from 'class-validator';
 import { MulterError } from 'multer';
 
 import AppError from '../errors';
@@ -82,14 +83,14 @@ const errorHandlers = {
       });
     } else next(err);
   },
-  handleAJVError(err: Error, req: Request, res: Response, next: NextFunction) {
-    if (err.constructor.name === 'ValidationError') {
+  handleValidationError(err: any, req: Request, res: Response, next: NextFunction) {
+    if (err.constructor.name === 'ValidationError' || err[0] instanceof ValidationError) {
       res.status(400);
       next({
         isClient: errorMarkers.isClient,
         response: {
           status: errorMarkers.status,
-          message: err.message,
+          message: err.message ?? 'Validation failed',
           data: { ...err, timestamp: errorMarkers.timestamp },
         },
       });
@@ -104,10 +105,6 @@ const errorHandlers = {
         break;
       case 'Query':
         res.status(404);
-        next({ isClient: errorMarkers.isClient, response: error });
-        break;
-      case 'Validation':
-        res.status(400);
         next({ isClient: errorMarkers.isClient, response: error });
         break;
       case 'Authorization':
