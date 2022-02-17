@@ -47,7 +47,7 @@ describe('User tests', () => {
       expect(message).toBeString();
       expect(message).toEqual('New user successfully signed up');
       expect(data).toBeObject();
-      expect(data).toContainKeys(['name', 'email', 'id', 'role', 'createDate', 'updateDate']);
+      expect(data).toContainKeys(['name', 'email', 'id', 'role', 'createdAt', 'updatedAt']);
       expect(data.id).toBeString();
       expect(data.name).toBeString();
       expect(data.name).toEqual(newUser.name);
@@ -55,8 +55,8 @@ describe('User tests', () => {
       expect(data.email).toEqual(newUser.email);
       expect(data.role).toBeString();
       expect(data.role).toEqual('client');
-      expect(data.createDate).toBeDate();
-      expect(data.updateDate).toBeDate();
+      expect(data.createdAt).toBeDate();
+      expect(data.updatedAt).toBeDate();
     });
   });
 
@@ -67,7 +67,7 @@ describe('User tests', () => {
       expect(message).toBeString();
       expect(message).toEqual('Registered user successfully signed in');
       expect(data).toBeObject();
-      expect(data).toContainKeys(['name', 'email', 'id', 'role', 'createDate', 'updateDate']);
+      expect(data).toContainKeys(['name', 'email', 'id', 'role', 'createdAt', 'updatedAt']);
       expect(data.id).toBeString();
       expect(data.name).toBeString();
       expect(data.name).toEqual(user.name);
@@ -75,8 +75,8 @@ describe('User tests', () => {
       expect(data.email).toEqual(user.email);
       expect(data.role).toBeString();
       expect(data.role).toEqual('client');
-      expect(data.createDate).toBeDate();
-      expect(data.updateDate).toBeDate();
+      expect(data.createdAt).toBeDate();
+      expect(data.updatedAt).toBeDate();
     });
   });
 });

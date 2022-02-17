@@ -1,34 +1,29 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, BeforeUpdate,
-  CreateDateColumn, UpdateDateColumn, BeforeInsert,
+  Entity, Column, BeforeInsert,
 } from 'typeorm';
-import { IsEmail, IsIn, validateOrReject } from 'class-validator';
+import { IsEmail, IsIn } from 'class-validator';
 
+import AppEntity from './Base';
 import bcrypt from '../utils/bcrypt';
 import AppError from '../errors';
 
 @Entity()
-export default class UserEntity {
+export default class UserEntity extends AppEntity {
   constructor(
     id: string,
     email: string,
     name: string,
     password: string,
-    createDate: Date = new Date(),
-    updateDate: Date = new Date(),
+    createdAt: Date = new Date(),
+    updatedAt: Date = new Date(),
     role: string = 'client',
   ) {
-    this.id = id;
+    super(id, createdAt, updatedAt);
     this.email = email;
     this.name = name;
     this.role = role;
     this.password = password;
-    this.createDate = createDate;
-    this.updateDate = updateDate;
   }
-
-    @PrimaryGeneratedColumn('uuid')
-      id: string;
 
     @Column({ unique: true, type: 'text', nullable: false })
     @IsEmail()
@@ -44,21 +39,9 @@ export default class UserEntity {
     @IsIn(['client', 'admin'])
       role: string;
 
-    @CreateDateColumn({ default: new Date() })
-      createDate: Date;
-
-    @UpdateDateColumn({ default: new Date() })
-      updateDate: Date;
-
     @BeforeInsert()
     async hashPassword() {
       if (this.password != null) this.password = await bcrypt.hashString(this.password);
-    }
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    async validateFields() {
-      return validateOrReject(this);
     }
 
     async validatePassword(password: string, param: string = 'password') {

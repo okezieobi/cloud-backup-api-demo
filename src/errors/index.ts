@@ -1,7 +1,9 @@
 export default class AppError extends Error {
-  data: { timestamp: Date; location: string; };
+  data: { timestamp: Date };
 
-  constructor(message: string = 'Unspecified error', location: string = 'App', data: object = {}) {
+  type: string;
+
+  constructor(message: string = 'Unspecified error', type: string = 'App', data: any = {}) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super(message);
     // Set the prototype explicitly.
@@ -10,8 +12,8 @@ export default class AppError extends Error {
       Error.captureStackTrace(this, AppError);
     }
     // Custom debugging information
+    this.type = type;
     this.data = {
-      location,
       ...data,
       timestamp: new Date(),
     };

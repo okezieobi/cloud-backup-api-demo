@@ -52,7 +52,7 @@ const errorHandlers = {
         response: {
           status: errorMarkers.status,
           message: errMsg.replace(/[^\w\s]/gi, '').trim(),
-          data: { timestamp: errorMarkers.timestamp },
+          data: { type: 'EntityNotFoundError', timestamp: errorMarkers.timestamp },
         },
       });
     } else next(err);
@@ -65,7 +65,7 @@ const errorHandlers = {
         response: {
           status: errorMarkers.status,
           message: err.message,
-          data: { ...err, timestamp: errorMarkers.timestamp },
+          data: { type: 'MulterError', ...err, timestamp: errorMarkers.timestamp },
         },
       });
     } else next(err);
@@ -78,7 +78,7 @@ const errorHandlers = {
         response: {
           status: errorMarkers.status,
           message: err.message,
-          data: { ...err.driverError, timestamp: errorMarkers.timestamp },
+          data: { type: 'SQLQueryError', ...err.driverError, timestamp: errorMarkers.timestamp },
         },
       });
     } else next(err);
@@ -91,14 +91,14 @@ const errorHandlers = {
         response: {
           status: errorMarkers.status,
           message: err.message ?? 'Validation failed',
-          data: { ...err, timestamp: errorMarkers.timestamp },
+          data: { type: 'ValidationError', ...err, timestamp: errorMarkers.timestamp },
         },
       });
     } else next(err);
   },
   handleCustomError(err: AppError, req: Request, res: Response, next: NextFunction) {
     const error = { status: errorMarkers.status, message: err.message, data: err.data };
-    switch (err.data?.location) {
+    switch (err.type) {
       case 'Argument':
         res.status(400);
         next({ isClient: errorMarkers.isClient, response: error });

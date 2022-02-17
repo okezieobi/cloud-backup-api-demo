@@ -3,6 +3,7 @@ import { createConnection, getConnection, ConnectionOptions } from 'typeorm';
 
 import Env from '../utils/Env';
 import UserEntity from './User';
+import FileEntity from './File';
 
 export default async () => {
   let connection;
@@ -12,7 +13,7 @@ export default async () => {
     ssl: process.env.NODE_ENV === 'testing-in-ci' ? false : { rejectUnauthorized: false },
     synchronize: true,
     dropSchema: process.env.NODE_ENV === 'development',
-    entities: [UserEntity],
+    entities: [UserEntity, FileEntity],
   };
   try {
     connection = await getConnection();
@@ -22,4 +23,4 @@ export default async () => {
   return connection;
 };
 
-export { UserEntity };
+export { UserEntity, FileEntity };
