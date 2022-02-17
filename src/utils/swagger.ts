@@ -11,7 +11,7 @@ switch (process.env.NODE_ENV) {
 }
 
 const swaggerDefinition = {
-  openapi: '3.0.0',
+  openapi: '3.0.3',
   info: {
     title: 'Cloud backup demo REST API', // Title of the documentation
     version: '1.0.0', // Version of the app

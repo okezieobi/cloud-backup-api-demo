@@ -5,13 +5,13 @@ import Controller from '.';
 import UserServices from '../services/User';
 import JWT from '../utils/Jwt';
 
-interface UserControllerInterface {
-    Service?: typeof UserServices;
-    Jwt?: typeof JWT;
+interface UserControllerParams {
+    Service: typeof UserServices;
+    Jwt: typeof JWT;
     key: string;
 }
 
-export default class UserController extends Controller implements UserControllerInterface {
+export default class UserController extends Controller implements UserControllerParams {
   Service: typeof UserServices;
 
   Jwt: typeof JWT;

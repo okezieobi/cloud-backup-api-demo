@@ -1,33 +1,27 @@
 paths:
-  /media:                # path of the user from your endpoint
+  /files/save:                # path of the user from your endpoint
     post:                 # endpoint request type (post request)
       tags:               # Tag property
-        - Media            # Value of the tag
-      summary: saves a media file to a remote storage as an authenticated User
+        - File            # Value of the tag
+      summary: saves as an authenticated User
       security:
        - headerAuth: []
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              $ref: '#/components/schemas/create-media'
+              $ref: '#/components/schemas/save_file'
       responses:          # server responses
         201:
-          description: An object with media details
+          description: An object with saved filed details
         401:
           description: Error message object in error property of response body
         400:
           description: Error message object in error property of response body
 components:        # Schema definition for request body
  schemas:
-  create-media:
+  save_file:
     type: object
     properties:
-      folder:
-        type: string
-        example: 'test'
-      media:
-        type: array
-        items:
-          type: string
-          format: binary
+      file(s):
+        type: object

@@ -34,8 +34,8 @@ describe('User tests', () => {
   };
 
   beforeAll(async () => {
-    const repo = await (await userRepositories());
-    await repo.clear();
+    const repo = await userRepositories();
+    await repo.delete({});
     const registeredUser = repo.create(user);
     await repo.save(registeredUser);
   });

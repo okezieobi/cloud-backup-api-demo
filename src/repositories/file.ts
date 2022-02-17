@@ -8,6 +8,6 @@ class FileRepository extends Repository<FileEntity> {
 }
 
 export default async () => {
-  const resolvedConnection = await (await connection());
+  const resolvedConnection = await connection();
   return resolvedConnection.getCustomRepository(FileRepository);
 };

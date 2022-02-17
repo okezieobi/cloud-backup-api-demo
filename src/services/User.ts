@@ -33,7 +33,7 @@ export default class UserServices implements UserServicesParams {
   }
 
   async signupUser(arg: SignupParam) {
-    const repo = await (await this.repository.user());
+    const repo = await this.repository.user();
     const newUser = repo.create(arg);
     await repo.save(newUser);
     return { message: 'New user successfully signed up', data: { ...newUser, password: undefined } };
@@ -48,14 +48,13 @@ export default class UserServices implements UserServicesParams {
         password: { type: 'string' },
       },
       required: ['email', 'password'],
-      additionalProperties: false,
     };
     return ajv.compile(schema)(arg);
   }
 
   async loginUser({ email, password }: LoginParams) {
     await UserServices.validateLoginArg({ email, password });
-    const repo = await (await this.repository.user());
+    const repo = await this.repository.user();
     const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
     return { message: 'Registered user successfully signed in', data: { ...userExists, password: undefined } };
@@ -72,7 +71,7 @@ export default class UserServices implements UserServicesParams {
 
   async authUser(id: string) {
     await UserServices.validateId(id);
-    const repo = await (await this.repository.user());
+    const repo = await this.repository.user();
     return repo.findOneOrFail({ where: { id } });
   }
 }
