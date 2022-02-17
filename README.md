@@ -12,6 +12,10 @@
 
 A simple REST API for  cloud backup app
 
+## Live documentation
+
+<https://cloud-backup-api-test.herokuapp.com/>
+
 ## Tech stack
 
 NodeJS/TypeScript, ExpressJS, Cloudinary, PostgreSQL, Redis
