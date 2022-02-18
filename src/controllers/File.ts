@@ -20,7 +20,7 @@ export default class FileController extends Controller implements FileController
   saveFile({ body }: Request, res: Response, next: NextFunction) {
     const { saveFile } = new this.Service();
     return this.handleService({
-      method: saveFile, res, next, status: 201, arg: { ...body, user: res.locals.user.id },
+      method: saveFile, res, next, status: 201, arg: { ...body, user: res.locals.user },
     });
   }
 }

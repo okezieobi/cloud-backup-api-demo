@@ -11,7 +11,7 @@ export default class FileEntity extends AppEntity {
   constructor(
     id: string,
     user: UserEntity,
-    file: any,
+    info: any[],
     isSafe: boolean = true,
     createdAt: Date = new Date(),
     updatedAt: Date = new Date(),
@@ -19,14 +19,14 @@ export default class FileEntity extends AppEntity {
     super(id, createdAt, updatedAt);
     this.user = user;
     this.isSafe = isSafe;
-    this.file = file;
+    this.info = info;
   }
 
     @ManyToOne(() => UserEntity, (user) => user.files)
       user: UserEntity;
 
     @Column({ type: 'json' })
-      file: any;
+      info: any[];
 
     @Column({ default: 'false', type: 'boolean' })
     @IsBoolean()

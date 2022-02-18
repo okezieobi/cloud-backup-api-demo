@@ -9,6 +9,6 @@ const {
 const authRouter = Router();
 
 authRouter.post('/signup', [signupUser, setJWT], dispatchResponse);
-authRouter.post('/login', [loginUser, setJWT, dispatchResponse]);
+authRouter.post('/login', [loginUser, setJWT], dispatchResponse);
 
 export default { authRouter, authUser };

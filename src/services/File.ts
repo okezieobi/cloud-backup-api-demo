@@ -10,7 +10,7 @@ interface FileServicesParams {
 
 interface SaveFileParams {
     user: object;
-    files: object[];
+    info: object[];
 }
 
 const ajv = new Ajv({ allErrors: true });
@@ -32,9 +32,9 @@ export default class FileServices implements FileServicesParams {
       type: 'object',
       properties: {
         user: { type: 'object' },
-        files: { type: 'array', minItems: 1, items: { type: 'object' } },
+        info: { type: 'array', minItems: 1, items: { type: 'object' } },
       },
-      required: ['user', 'files'],
+      required: ['user', 'info'],
     };
     return ajv.compile(schema)(arg);
   }
@@ -44,6 +44,6 @@ export default class FileServices implements FileServicesParams {
     const repo = await await this.repository.file();
     const newFile = await repo.create(arg);
     await repo.save(newFile);
-    return { message: 'New file successfully saved', data: newFile };
+    return { message: 'New file successfully saved', data: { ...newFile, user: undefined } };
   }
 }

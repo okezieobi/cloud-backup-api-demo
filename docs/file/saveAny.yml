@@ -23,5 +23,6 @@ components:        # Schema definition for request body
   save_file:
     type: object
     properties:
-      file(s):
-        type: object
+      info:
+        type: array
+        example: [{ test: test }]
