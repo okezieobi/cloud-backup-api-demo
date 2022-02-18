@@ -3,6 +3,7 @@ import ajvKeywords from 'ajv-keywords';
 import ajvFormats from 'ajv-formats';
 
 import userRepository from '../repositories/user';
+import Services from '.';
 
 interface UserServicesParams {
     repository: { user: typeof userRepository };
@@ -35,10 +36,11 @@ if (process.env.NODE_ENV === 'development') {
   })();
 }
 
-export default class UserServices implements UserServicesParams {
+export default class UserServices extends Services implements UserServicesParams {
   repository: { user: typeof userRepository };
 
   constructor(repository = { user: userRepository }) {
+    super();
     this.repository = repository;
     this.signupUser = this.signupUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
@@ -72,15 +74,6 @@ export default class UserServices implements UserServicesParams {
     const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
     return { message: 'Registered user successfully signed in', data: { ...userExists, password: undefined } };
-  }
-
-  static async validateId(id: string) {
-    const schema: JSONSchemaType<string> = {
-      $async: true,
-      type: 'string',
-      format: 'uuid',
-    };
-    return ajv.compile(schema)(id);
   }
 
   async authUser(id: string) {

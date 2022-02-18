@@ -3,6 +3,7 @@ import ajvKeywords from 'ajv-keywords';
 import ajvFormats from 'ajv-formats';
 
 import fileRepository from '../repositories/file';
+import Services from '.';
 
 interface FileServicesParams {
     repository: { file: typeof fileRepository };
@@ -23,10 +24,11 @@ const ajv = new Ajv({ allErrors: true });
 ajvFormats(ajv);
 ajvKeywords(ajv);
 
-export default class FileServices implements FileServicesParams {
+export default class FileServices extends Services implements FileServicesParams {
   repository: { file: typeof fileRepository };
 
   constructor(repository = { file: fileRepository }) {
+    super();
     this.repository = repository;
     this.saveFile = this.saveFile.bind(this);
     this.listFiles = this.listFiles.bind(this);
@@ -73,5 +75,11 @@ export default class FileServices implements FileServicesParams {
     const repo = await this.repository.file();
     const data = await repo.find({ where: arg });
     return { message: 'Files retrieved successfully', data };
+  }
+
+  async verifyOne(id: string) {
+    await FileServices.validateId(id);
+    const repo = await this.repository.file();
+    return repo.findOneOrFail({ where: { id } });
   }
 }
