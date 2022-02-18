@@ -1,0 +1,21 @@
+paths:
+  /files/all/{id}:                # path of the user from your endpoint
+    get:                 # endpoint request type (post request)
+      tags:               # Tag property
+        - File            # Value of the tag
+      summary: gets all associated files of an authenticated user
+      security:
+       - headerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: The id of file to be retrieved.
+          schema:
+            type: string
+      responses:          # server responses
+        200:
+          description: An object with an array of files
+        401:
+          description: Error message object in error property of response body
+        404:
+          description: Error message object in error property of response body

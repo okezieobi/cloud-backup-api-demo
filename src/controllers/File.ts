@@ -11,32 +11,53 @@ interface FileControllerParams {
 export default class FileController extends Controller implements FileControllerParams {
   Service: typeof FileServices;
 
-  constructor(Service = FileServices, key = 'file(s)') {
+  constructor(Service = FileServices, key = 'files') {
     super(key);
     this.Service = Service;
-    this.saveFile = this.saveFile.bind(this);
-    this.listFiles = this.listFiles.bind(this);
-    this.listFIlesForAdmin = this.listFIlesForAdmin.bind(this);
+    this.saveOne = this.saveOne.bind(this);
+    this.listAll = this.listAll.bind(this);
+    this.listAllForAdmin = this.listAllForAdmin.bind(this);
+    this.verifyOne = this.verifyOne.bind(this);
+    this.verifyOneForAdmin = this.verifyOneForAdmin.bind(this);
   }
 
-  saveFile({ body }: Request, res: Response, next: NextFunction) {
-    const { saveFile } = new this.Service();
+  saveOne({ body }: Request, res: Response, next: NextFunction) {
+    const { saveOne } = new this.Service();
     return this.handleService({
-      method: saveFile, res, next, status: 201, arg: { ...body, user: res.locals.user },
+      method: saveOne, res, next, status: 201, arg: { ...body, user: res.locals.user },
     });
   }
 
-  listFiles(req: Request, res: Response, next: NextFunction) {
-    const { listFiles } = new this.Service();
+  listAll(req: Request, res: Response, next: NextFunction) {
+    const { listAll } = new this.Service();
     return this.handleService({
-      method: listFiles, res, next, arg: { user: res.locals.user.id, isSafe: true },
+      method: listAll, res, next, arg: { user: res.locals.user.id, isSafe: true },
     });
   }
 
-  listFIlesForAdmin({ query: { user, isSafe } }: Request, res: Response, next: NextFunction) {
-    const { listFiles } = new this.Service();
+  listAllForAdmin({ query: { user, isSafe } }: Request, res: Response, next: NextFunction) {
+    const { listAll } = new this.Service();
     return this.handleService({
-      method: listFiles, res, next, arg: { user: user ?? res.locals.user.id, isSafe: (`${isSafe}`.toLowerCase() === 'true') ?? true },
+      method: listAll, res, next, arg: { user, isSafe: (`${isSafe}`.toLowerCase() === 'true') ?? true },
     });
+  }
+
+  verifyOne({ params: { id } }: Request, res: Response, next: NextFunction) {
+    const { verifyOne } = new this.Service();
+    return this.handleService({
+      method: verifyOne, res, next, arg: { user: res.locals.user.id, id },
+    });
+  }
+
+  verifyOneForAdmin({ params: { id } }: Request, res: Response, next: NextFunction) {
+    const { verifyOne } = new this.Service();
+    return this.handleService({
+      method: verifyOne, res, next, arg: { id },
+    });
+  }
+
+  static getOne(req: Request, res: Response, next: NextFunction) {
+    res.locals.files = { message: 'File successfully retrieved', data: res.locals.files };
+    next();
   }
 }

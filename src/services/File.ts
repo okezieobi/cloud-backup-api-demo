@@ -14,6 +14,11 @@ interface ListFilesParams {
   isSafe: boolean;
 }
 
+interface verifyOneParams {
+  user?: string;
+  id: string;
+}
+
 interface SaveFileParams {
     user: object;
     info: object[];
@@ -30,11 +35,12 @@ export default class FileServices extends Services implements FileServicesParams
   constructor(repository = { file: fileRepository }) {
     super();
     this.repository = repository;
-    this.saveFile = this.saveFile.bind(this);
-    this.listFiles = this.listFiles.bind(this);
+    this.saveOne = this.saveOne.bind(this);
+    this.listAll = this.listAll.bind(this);
+    this.verifyOne = this.verifyOne.bind(this);
   }
 
-  static async validateSaveFile(arg: SaveFileParams) {
+  static async validateSaveOne(arg: SaveFileParams) {
     const schema: JSONSchemaType<SaveFileParams> = {
       $async: true,
       type: 'object',
@@ -48,15 +54,15 @@ export default class FileServices extends Services implements FileServicesParams
     return ajv.compile(schema)(arg);
   }
 
-  async saveFile(arg: SaveFileParams) {
-    await FileServices.validateSaveFile(arg);
+  async saveOne(arg: SaveFileParams) {
+    await FileServices.validateSaveOne(arg);
     const repo = await this.repository.file();
     const newFile = await repo.create(arg);
     await repo.save(newFile);
     return { message: 'New file successfully saved', data: { ...newFile, user: undefined } };
   }
 
-  static async validateListFiles(arg: ListFilesParams) {
+  static async validateListAll(arg: ListFilesParams) {
     const schema: JSONSchemaType<ListFilesParams> = {
       $async: true,
       type: 'object',
@@ -70,16 +76,19 @@ export default class FileServices extends Services implements FileServicesParams
     return ajv.compile(schema)(arg);
   }
 
-  async listFiles(arg: ListFilesParams) {
-    await FileServices.validateListFiles(arg);
+  async listAll({ user, isSafe }: ListFilesParams) {
+    await FileServices.validateListAll({ user, isSafe });
     const repo = await this.repository.file();
-    const data = await repo.find({ where: arg });
+    let data: any;
+    if (user == null) data = await repo.find({ where: { isSafe } });
+    else data = await repo.find({ where: { user, isSafe } });
     return { message: 'Files retrieved successfully', data };
   }
 
-  async verifyOne(id: string) {
+  async verifyOne({ id, user }: verifyOneParams) {
     await FileServices.validateId(id);
     const repo = await this.repository.file();
-    return repo.findOneOrFail({ where: { id } });
+    if (user == null) return repo.findOneOrFail({ where: { id } });
+    return repo.findOneOrFail({ where: { user, id } });
   }
 }
