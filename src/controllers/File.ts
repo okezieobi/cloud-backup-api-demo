@@ -38,21 +38,21 @@ export default class FileController extends Controller implements FileController
   listAllForAdmin({ query: { user, isSafe } }: Request, res: Response, next: NextFunction) {
     const { listAll } = new this.Service();
     return this.handleService({
-      method: listAll, res, next, arg: { user, isSafe: (`${isSafe}`.toLowerCase() === 'true') ?? true },
+      method: listAll, res, next, arg: { user, isSafe: (`${isSafe}`.toLowerCase() === 'true') },
     });
   }
 
   verifyOne({ params: { id } }: Request, res: Response, next: NextFunction) {
     const { verifyOne } = new this.Service();
     return this.handleService({
-      method: verifyOne, res, next, arg: { user: res.locals.user.id, id },
+      method: verifyOne, res, next, arg: { user: res.locals.user.id, id: id === ',' ? undefined : id },
     });
   }
 
   verifyOneForAdmin({ params: { id } }: Request, res: Response, next: NextFunction) {
     const { verifyOne } = new this.Service();
     return this.handleService({
-      method: verifyOne, res, next, arg: { id },
+      method: verifyOne, res, next, arg: { id: id === ',' ? undefined : id },
     });
   }
 

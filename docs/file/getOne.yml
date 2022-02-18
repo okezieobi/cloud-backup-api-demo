@@ -1,9 +1,9 @@
 paths:
-  /all_files/{id}:                # path of the user from your endpoint
+  /files/{id}:                # path of the user from your endpoint
     get:                 # endpoint request type (post request)
       tags:               # Tag property
         - File            # Value of the tag
-      summary: gets all files of all users as an authenticated admin
+      summary: gets all associated files of an authenticated user
       security:
        - headerAuth: []
       parameters:

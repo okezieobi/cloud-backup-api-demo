@@ -1,5 +1,5 @@
 paths:
-  /files/all:                # path of the user from your endpoint
+  /all_files:                # path of the user from your endpoint
     get:                 # endpoint request type (post request)
       tags:               # Tag property
         - File            # Value of the tag
