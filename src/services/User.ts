@@ -22,6 +22,19 @@ const ajv = new Ajv({ allErrors: true });
 ajvFormats(ajv);
 ajvKeywords(ajv);
 
+if (process.env.NODE_ENV === 'development') {
+  (async () => {
+    const repo = await userRepository();
+    const admin = repo.create({
+      name: 'Frank',
+      email: 'frank@okezie.com',
+      password: 'test',
+      role: 'admin',
+    });
+    await repo.save(admin);
+  })();
+}
+
 export default class UserServices implements UserServicesParams {
   repository: { user: typeof userRepository };
 

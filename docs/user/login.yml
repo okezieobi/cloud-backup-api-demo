@@ -11,8 +11,8 @@ paths:
             schema:
               $ref: '#/components/schemas/login'
             example:
-              email: 'example@email.io'
-              password: 'password-example'
+              email: 'frank@okezie.com'
+              password: 'test'
       responses:          # server responses
          200:
           description: User details object in data property of response body and a Json Web Token s set as token in data property of response body.

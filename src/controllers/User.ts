@@ -36,6 +36,14 @@ export default class UserController extends Controller implements UserController
       }).catch(next);
   }
 
+  static isAdmin(req: Request, res: Response, next: NextFunction) {
+    if (res.locals.user.role === 'admin') next();
+    else {
+      res.status(403);
+      next({ isClient: true, response: { status: 'error', message: 'User must be an admin', data: { timestamp: new Date() } } });
+    }
+  }
+
   signupUser({ body }: Request, res: Response, next: NextFunction) {
     const { signupUser } = new this.Service();
     return this.handleService({

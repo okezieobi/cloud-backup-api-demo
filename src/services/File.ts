@@ -8,6 +8,11 @@ interface FileServicesParams {
     repository: { file: typeof fileRepository };
 }
 
+interface ListFilesParams {
+  user: string;
+  isSafe: boolean;
+}
+
 interface SaveFileParams {
     user: object;
     info: object[];
@@ -24,6 +29,7 @@ export default class FileServices implements FileServicesParams {
   constructor(repository = { file: fileRepository }) {
     this.repository = repository;
     this.saveFile = this.saveFile.bind(this);
+    this.listFiles = this.listFiles.bind(this);
   }
 
   static async validateSaveFile(arg: SaveFileParams) {
@@ -45,5 +51,25 @@ export default class FileServices implements FileServicesParams {
     const newFile = await repo.create(arg);
     await repo.save(newFile);
     return { message: 'New file successfully saved', data: { ...newFile, user: undefined } };
+  }
+
+  static async validateListFiles(arg: ListFilesParams) {
+    const schema: JSONSchemaType<ListFilesParams> = {
+      $async: true,
+      type: 'object',
+      properties: {
+        user: { type: 'string', nullable: 'true' },
+        isSafe: { type: 'boolean' },
+      },
+      required: ['isSafe', 'user'],
+    };
+    return ajv.compile(schema)(arg);
+  }
+
+  async listFiles(arg: ListFilesParams) {
+    await FileServices.validateListFiles(arg);
+    const repo = await await this.repository.file();
+    const data = await repo.find({ where: arg });
+    return { message: 'Files retrieved successfully', data };
   }
 }
