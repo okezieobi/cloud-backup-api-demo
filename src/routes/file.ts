@@ -10,9 +10,9 @@ const {
 
 const router = Router();
 
+router.get('/', listFiles, dispatchResponse);
 router.post('/save', saveFile, dispatchResponse);
 router.post('/upload', fileUploader.any(), Controller.sendMediaResponse);
-router.get('/', listFiles, dispatchResponse);
 
 router.use(UserController.isAdmin);
 router.get('/all', listFIlesForAdmin, dispatchResponse);

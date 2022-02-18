@@ -29,14 +29,14 @@ export default class FileController extends Controller implements FileController
   listFiles(req: Request, res: Response, next: NextFunction) {
     const { listFiles } = new this.Service();
     return this.handleService({
-      method: listFiles, res, next, arg: { user: res.locals.user, isSafe: true },
+      method: listFiles, res, next, arg: { user: res.locals.user.id, isSafe: true },
     });
   }
 
   listFIlesForAdmin({ query: { user, isSafe } }: Request, res: Response, next: NextFunction) {
     const { listFiles } = new this.Service();
     return this.handleService({
-      method: listFiles, res, next, arg: { user, isSafe },
+      method: listFiles, res, next, arg: { user: user ?? res.locals.user.id, isSafe: (`${isSafe}`.toLowerCase() === 'true') ?? true },
     });
   }
 }

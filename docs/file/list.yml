@@ -3,12 +3,11 @@ paths:
     get:                 # endpoint request type (post request)
       tags:               # Tag property
         - File            # Value of the tag
-      summary: gets files saved on database
+      summary: gets all associated files of an authenticated user
       security:
        - headerAuth: []
-      parameters:
       responses:          # server responses
         200:
-          description: An object with an array of stores
+          description: An object with an array of files
         401:
           description: Error message object in error property of response body

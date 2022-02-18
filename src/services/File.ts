@@ -9,7 +9,7 @@ interface FileServicesParams {
 }
 
 interface ListFilesParams {
-  user: string;
+  user?: string;
   isSafe: boolean;
 }
 
@@ -41,13 +41,14 @@ export default class FileServices implements FileServicesParams {
         info: { type: 'array', minItems: 1, items: { type: 'object' } },
       },
       required: ['user', 'info'],
+      additionalProperties: false,
     };
     return ajv.compile(schema)(arg);
   }
 
   async saveFile(arg: SaveFileParams) {
     await FileServices.validateSaveFile(arg);
-    const repo = await await this.repository.file();
+    const repo = await this.repository.file();
     const newFile = await repo.create(arg);
     await repo.save(newFile);
     return { message: 'New file successfully saved', data: { ...newFile, user: undefined } };
@@ -58,17 +59,18 @@ export default class FileServices implements FileServicesParams {
       $async: true,
       type: 'object',
       properties: {
-        user: { type: 'string', nullable: 'true' },
+        user: { type: 'string', nullable: true },
         isSafe: { type: 'boolean' },
       },
-      required: ['isSafe', 'user'],
+      required: ['isSafe'],
+      additionalProperties: false,
     };
     return ajv.compile(schema)(arg);
   }
 
   async listFiles(arg: ListFilesParams) {
     await FileServices.validateListFiles(arg);
-    const repo = await await this.repository.file();
+    const repo = await this.repository.file();
     const data = await repo.find({ where: arg });
     return { message: 'Files retrieved successfully', data };
   }

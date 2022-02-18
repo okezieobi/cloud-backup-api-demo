@@ -61,6 +61,7 @@ export default class UserServices implements UserServicesParams {
         password: { type: 'string' },
       },
       required: ['email', 'password'],
+      additionalProperties: false,
     };
     return ajv.compile(schema)(arg);
   }

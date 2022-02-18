@@ -26,7 +26,7 @@ components:        # Schema definition for request body
       folder:
         type: string
         example: 'test'
-      file(s):
+      files:
         type: array
         items:
           type: string
