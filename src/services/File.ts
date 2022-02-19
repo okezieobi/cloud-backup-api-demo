@@ -2,7 +2,7 @@ import Ajv, { JSONSchemaType } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import ajvFormats from 'ajv-formats';
 
-import fileRepository from '../repositories/file';
+import { fileRepository } from '../entities';
 import Services from '.';
 
 interface FileServicesParams {

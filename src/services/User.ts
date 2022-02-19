@@ -2,7 +2,7 @@ import Ajv, { JSONSchemaType } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import ajvFormats from 'ajv-formats';
 
-import userRepository from '../repositories/user';
+import { userRepository } from '../entities';
 import Services from '.';
 
 interface UserServicesParams {

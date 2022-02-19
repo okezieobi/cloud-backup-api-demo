@@ -17,104 +17,107 @@ const errorMarkers = {
   timestamp: new Date(),
 };
 
-const errorHandlers = {
-  handleJwtError(
-    err: Error,
-    { headers }: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    if (err instanceof JsonWebTokenError || err instanceof TokenExpiredError) {
-      res.status(401);
-      next({
-        isClient: errorMarkers.isClient,
-        response: {
-          status: errorMarkers.status,
-          message: err.message,
-          data: {
-            name: err.name,
-            param: 'token',
-            location: 'headers',
-            value: headers.token,
-            msg: 'Verification of jwt failed',
-            timestamp: errorMarkers.timestamp,
-          },
+const handleJwtError = (
+  err: Error,
+  { headers }: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (err instanceof JsonWebTokenError || err instanceof TokenExpiredError) {
+    res.status(401);
+    next({
+      isClient: errorMarkers.isClient,
+      response: {
+        status: errorMarkers.status,
+        message: err.message,
+        data: {
+          name: err.name,
+          param: 'token',
+          location: 'headers',
+          value: headers.token,
+          msg: 'Verification of jwt failed',
+          timestamp: errorMarkers.timestamp,
         },
-      });
-    } else next(err);
-  },
-  handleEntityNotFoundErr(err: any, req: Request, res: Response, next: NextFunction) {
-    if (err instanceof EntityNotFoundError) {
+      },
+    });
+  } else next(err);
+};
+
+const handleEntityNotFoundErr = (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof EntityNotFoundError) {
+    res.status(404);
+    const errMsg:string = err.message.replace(/\s+/g, ' ');
+    next({
+      isClient: errorMarkers.isClient,
+      response: {
+        status: errorMarkers.status,
+        message: errMsg.replace(/[^\w\s]/gi, '').trim(),
+        data: { type: 'EntityNotFoundError', timestamp: errorMarkers.timestamp },
+      },
+    });
+  } else next(err);
+};
+
+const handleMulterErr = (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof MulterError) {
+    res.status(400);
+    next({
+      isClient: errorMarkers.isClient,
+      response: {
+        status: errorMarkers.status,
+        message: err.message,
+        data: { type: 'MulterError', ...err, timestamp: errorMarkers.timestamp },
+      },
+    });
+  } else next(err);
+};
+
+const handleSQLValidationErr = (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof QueryFailedError) {
+    res.status(400);
+    next({
+      isClient: errorMarkers.isClient,
+      response: {
+        status: errorMarkers.status,
+        message: err.message,
+        data: { type: 'SQLQueryError', ...err.driverError, timestamp: errorMarkers.timestamp },
+      },
+    });
+  } else next(err);
+};
+
+const handleValidationError = (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err.constructor.name === 'ValidationError' || err[0] instanceof ValidationError) {
+    res.status(400);
+    next({
+      isClient: errorMarkers.isClient,
+      response: {
+        status: errorMarkers.status,
+        message: err.message ?? 'Validation failed',
+        data: { type: 'ValidationError', ...err, timestamp: errorMarkers.timestamp },
+      },
+    });
+  } else next(err);
+};
+
+const handleCustomError = (err: AppError, req: Request, res: Response, next: NextFunction) => {
+  const error = { status: errorMarkers.status, message: err.message, data: err.data };
+  switch (err.type) {
+    case 'Argument':
+      res.status(400);
+      next({ isClient: errorMarkers.isClient, response: error });
+      break;
+    case 'Query':
       res.status(404);
-      const errMsg:string = err.message.replace(/\s+/g, ' ');
-      next({
-        isClient: errorMarkers.isClient,
-        response: {
-          status: errorMarkers.status,
-          message: errMsg.replace(/[^\w\s]/gi, '').trim(),
-          data: { type: 'EntityNotFoundError', timestamp: errorMarkers.timestamp },
-        },
-      });
-    } else next(err);
-  },
-  handleMulterErr(err: any, req: Request, res: Response, next: NextFunction) {
-    if (err instanceof MulterError) {
-      res.status(400);
-      next({
-        isClient: errorMarkers.isClient,
-        response: {
-          status: errorMarkers.status,
-          message: err.message,
-          data: { type: 'MulterError', ...err, timestamp: errorMarkers.timestamp },
-        },
-      });
-    } else next(err);
-  },
-  handleSQLValidationErr(err: any, req: Request, res: Response, next: NextFunction) {
-    if (err instanceof QueryFailedError) {
-      res.status(400);
-      next({
-        isClient: errorMarkers.isClient,
-        response: {
-          status: errorMarkers.status,
-          message: err.message,
-          data: { type: 'SQLQueryError', ...err.driverError, timestamp: errorMarkers.timestamp },
-        },
-      });
-    } else next(err);
-  },
-  handleValidationError(err: any, req: Request, res: Response, next: NextFunction) {
-    if (err.constructor.name === 'ValidationError' || err[0] instanceof ValidationError) {
-      res.status(400);
-      next({
-        isClient: errorMarkers.isClient,
-        response: {
-          status: errorMarkers.status,
-          message: err.message ?? 'Validation failed',
-          data: { type: 'ValidationError', ...err, timestamp: errorMarkers.timestamp },
-        },
-      });
-    } else next(err);
-  },
-  handleCustomError(err: AppError, req: Request, res: Response, next: NextFunction) {
-    const error = { status: errorMarkers.status, message: err.message, data: err.data };
-    switch (err.type) {
-      case 'Argument':
-        res.status(400);
-        next({ isClient: errorMarkers.isClient, response: error });
-        break;
-      case 'Query':
-        res.status(404);
-        next({ isClient: errorMarkers.isClient, response: error });
-        break;
-      case 'Authorization':
-        res.status(401);
-        next({ isClient: errorMarkers.isClient, response: error });
-        break;
-      default:
-        next(err);
-    }
-  },
+      next({ isClient: errorMarkers.isClient, response: error });
+      break;
+    case 'Authorization':
+      res.status(401);
+      next({ isClient: errorMarkers.isClient, response: error });
+      break;
+    default:
+      next(err);
+  }
 };
 
 const dispatchClientError = ((
@@ -127,4 +130,11 @@ const dispatchClientError = ((
   else next(err);
 });
 
-export default [...Object.values(errorHandlers), dispatchClientError];
+export default [
+  handleJwtError,
+  handleEntityNotFoundErr,
+  handleMulterErr,
+  handleSQLValidationErr,
+  handleValidationError,
+  handleCustomError,
+  dispatchClientError];

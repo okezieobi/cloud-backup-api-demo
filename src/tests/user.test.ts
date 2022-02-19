@@ -1,4 +1,4 @@
-import userRepositories from '../repositories/user';
+import { userRepository } from '../entities';
 import UserServices from '../services/User';
 
 describe('User tests', () => {
@@ -34,7 +34,7 @@ describe('User tests', () => {
   };
 
   beforeAll(async () => {
-    const repo = await userRepositories();
+    const repo = await userRepository();
     await repo.delete({});
     const registeredUser = repo.create(user);
     await repo.save(registeredUser);

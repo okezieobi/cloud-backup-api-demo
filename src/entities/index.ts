@@ -5,8 +5,8 @@ import Env from '../utils/Env';
 import UserEntity from './User';
 import FileEntity from './File';
 
-export default async () => {
-  let connection;
+const connection = async () => {
+  let initializedConnection;
   const options: ConnectionOptions = {
     type: 'postgres',
     url: new Env().databaseURL,
@@ -16,11 +16,23 @@ export default async () => {
     entities: [UserEntity, FileEntity],
   };
   try {
-    connection = await getConnection();
+    initializedConnection = await getConnection();
   } catch (e) {
-    connection = await createConnection(options);
+    initializedConnection = await createConnection(options);
   }
-  return connection;
+  return initializedConnection;
 };
 
-export { UserEntity, FileEntity };
+const userRepository = async () => {
+  const resolvedConnection = await await connection();
+  return resolvedConnection.getRepository(UserEntity);
+};
+
+const fileRepository = async () => {
+  const resolvedConnection = await await connection();
+  return resolvedConnection.getRepository(FileEntity);
+};
+
+export default connection;
+
+export { userRepository, fileRepository };
