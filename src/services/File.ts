@@ -20,7 +20,7 @@ interface SaveFileParams {
 }
 
 interface UpdateFileParams {
-  file: { isSafe: boolean, id: string };
+  file: { isSafe: boolean, id: string, info: object[], createdAt: Date, updatedAt: Date };
   isSafe: boolean;
 }
 

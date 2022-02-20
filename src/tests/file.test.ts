@@ -72,4 +72,20 @@ describe('File management tests', () => {
       expect(data.updatedAt).toBeDate();
     });
   });
+
+  describe('Testing updating file safe property ie isSafe', () => {
+    it('Update file by id', async () => {
+      const { updateSafeProp } = new FileServices();
+      const { message, data } = await updateSafeProp({ isSafe: true, file: fileForTesting });
+      expect(message).toBeString();
+      expect(message).toEqual('File safe property ie isSafe updated to true');
+      expect(data).toBeObject();
+      expect(data).toContainKeys(['id', 'info', 'isSafe', 'createdAt', 'updatedAt']);
+      expect(data!.id).toBeString();
+      expect(data!.info).toBeArray();
+      expect(data!.isSafe).toBeBoolean();
+      expect(data!.createdAt).toBeDate();
+      expect(data!.updatedAt).toBeDate();
+    });
+  });
 });

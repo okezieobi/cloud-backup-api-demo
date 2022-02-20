@@ -36,4 +36,4 @@ A simple REST API for  cloud backup app
 
 ## Tech stack
 
-NodeJS/TypeScript, ExpressJS, Cloudinary, PostgreSQL,
+NodeJS/TypeScript, ExpressJS, Cloudinary, PostgreSQL/Typeorm,
