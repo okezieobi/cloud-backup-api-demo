@@ -15,11 +15,14 @@ describe('File management tests', () => {
     user: {},
   };
 
+  let fileForTesting: any;
+
   beforeAll(async () => {
     const userRepo = await userRepository();
     const fileRepo = await fileRepository();
 
     await fileRepo.delete({});
+    await userRepo.delete({});
 
     const registeredUser = userRepo.create(user);
     await userRepo.save(registeredUser);
@@ -27,14 +30,46 @@ describe('File management tests', () => {
     file.user = registeredUser;
     const savedFile = fileRepo.create(file);
     await fileRepo.save(savedFile);
+    fileForTesting = savedFile;
   });
 
   describe('Testing new file saving on database', () => {
     it('Saves a new file on a database', async () => {
       const { saveOne } = new FileServices();
-      const { message } = await saveOne(file);
+      const { message, data } = await saveOne(file);
       expect(message).toBeString();
       expect(message).toEqual('New file successfully saved');
+      expect(data).toBeObject();
+      expect(data).toContainKeys(['id', 'info', 'isSafe', 'createdAt', 'updatedAt']);
+      expect(data.id).toBeString();
+      expect(data.info).toBeArray();
+      expect(data.isSafe).toBeBoolean();
+      expect(data.createdAt).toBeDate();
+      expect(data.updatedAt).toBeDate();
+    });
+  });
+
+  describe('Testing files listing', () => {
+    it('List saved files using parameters', async () => {
+      const { listAll } = new FileServices();
+      const { message, data } = await listAll({ isSafe: true });
+      expect(message).toBeString();
+      expect(message).toEqual('Files retrieved successfully');
+      expect(data).toBeArray();
+    });
+  });
+
+  describe('Testing verifying file', () => {
+    it('Verify file with id', async () => {
+      const { verifyOne } = new FileServices();
+      const data = await verifyOne({ id: fileForTesting.id });
+      expect(data).toBeObject();
+      expect(data).toContainKeys(['id', 'info', 'isSafe', 'createdAt', 'updatedAt']);
+      expect(data.id).toBeString();
+      expect(data.info).toBeArray();
+      expect(data.isSafe).toBeBoolean();
+      expect(data.createdAt).toBeDate();
+      expect(data.updatedAt).toBeDate();
     });
   });
 });

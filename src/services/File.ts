@@ -44,7 +44,7 @@ export default class FileServices implements FileServicesParams {
       { forbidUnknownValues: true },
     );
     const repo = await this.repository.file();
-    let data: any;
+    let data;
     if (user == null) data = await repo.find({ where: { isSafe } });
     else data = await repo.find({ where: { user, isSafe } });
     return { message: 'Files retrieved successfully', data };

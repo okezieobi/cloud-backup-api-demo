@@ -1,4 +1,4 @@
-import { userRepository } from '../entities';
+import { userRepository, fileRepository } from '../entities';
 import UserServices from '../services/User';
 
 describe('User tests', () => {
@@ -33,11 +33,16 @@ describe('User tests', () => {
     password: 'test-password',
   };
 
+  let userForTesting: any;
+
   beforeAll(async () => {
-    const repo = await userRepository();
-    await repo.delete({});
-    const registeredUser = repo.create(user);
-    await repo.save(registeredUser);
+    const userRepo = await userRepository();
+    const fileRepo = await fileRepository();
+    await fileRepo.delete({});
+    await userRepo.delete({});
+    const registeredUser = userRepo.create(user);
+    await userRepo.save(registeredUser);
+    userForTesting = registeredUser;
   });
 
   describe('Testing new user creation', () => {
@@ -73,6 +78,22 @@ describe('User tests', () => {
       expect(data.name).toEqual(user.name);
       expect(data.email).toBeString();
       expect(data.email).toEqual(user.email);
+      expect(data.role).toBeString();
+      expect(data.role).toEqual('client');
+      expect(data.createdAt).toBeDate();
+      expect(data.updatedAt).toBeDate();
+    });
+  });
+
+  describe('Testing verfiying user', () => {
+    it('Verifies user by id', async () => {
+      const { authUser } = new UserServices();
+      const data = await authUser(userForTesting.id);
+      expect(data).toBeObject();
+      expect(data).toContainKeys(['name', 'email', 'id', 'role', 'createdAt', 'updatedAt']);
+      expect(data.id).toBeString();
+      expect(data.name).toBeString();
+      expect(data.email).toBeString();
       expect(data.role).toBeString();
       expect(data.role).toEqual('client');
       expect(data.createdAt).toBeDate();
