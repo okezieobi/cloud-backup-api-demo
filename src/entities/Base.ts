@@ -24,6 +24,9 @@ export default class AppEntity {
     @BeforeInsert()
     @BeforeUpdate()
     async validateFields() {
-      return validateOrReject(this);
+      return validateOrReject(
+        this,
+        { validationError: { target: false }, forbidUnknownValues: true },
+      );
     }
 }

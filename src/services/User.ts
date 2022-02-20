@@ -1,27 +1,17 @@
-import Ajv, { JSONSchemaType } from 'ajv';
-import ajvKeywords from 'ajv-keywords';
-import ajvFormats from 'ajv-formats';
+import { validateOrReject } from 'class-validator';
 
 import { userRepository } from '../entities';
-import Services from '.';
+import LoginValidator, { LoginParams } from '../validators/User.login';
+import IdValidator from '../validators/Id';
 
 interface UserServicesParams {
-    repository: { user: typeof userRepository };
+  repository: { user: typeof userRepository };
+  validator: { user: { Login: typeof LoginValidator }}
 }
 
-interface LoginParams {
-    email: string;
-    password: string;
-}
-
-interface SignupParam extends LoginParams {
+interface SignupParams extends LoginParams {
     name: string;
 }
-
-const ajv = new Ajv({ allErrors: true });
-
-ajvFormats(ajv);
-ajvKeywords(ajv);
 
 if (process.env.NODE_ENV === 'development') {
   (async () => {
@@ -36,40 +26,35 @@ if (process.env.NODE_ENV === 'development') {
   })();
 }
 
-export default class UserServices extends Services implements UserServicesParams {
+export default class UserServices implements UserServicesParams {
   repository: { user: typeof userRepository };
 
-  constructor(repository = { user: userRepository }) {
-    super();
+  validator: { user: { Login: typeof LoginValidator }};
+
+  constructor(
+    repository = { user: userRepository },
+    validator = { user: { Login: LoginValidator } },
+  ) {
     this.repository = repository;
+    this.validator = validator;
     this.signupUser = this.signupUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
     this.authUser = this.authUser.bind(this);
   }
 
-  async signupUser(arg: SignupParam) {
+  async signupUser(arg: SignupParams) {
     const repo = await this.repository.user();
     const newUser = repo.create(arg);
     await repo.save(newUser);
     return { message: 'New user successfully signed up', data: { ...newUser, password: undefined } };
   }
 
-  static async validateLoginArg(arg: LoginParams) {
-    const schema: JSONSchemaType<LoginParams> = {
-      $async: true,
-      type: 'object',
-      properties: {
-        email: { type: 'string', format: 'email' },
-        password: { type: 'string' },
-      },
-      required: ['email', 'password'],
-      additionalProperties: false,
-    };
-    return ajv.compile(schema)(arg);
-  }
-
   async loginUser({ email, password }: LoginParams) {
-    await UserServices.validateLoginArg({ email, password });
+    const arg = new this.validator.user.Login(email, password);
+    await validateOrReject(
+      arg,
+      { validationError: { target: false }, forbidUnknownValues: true },
+    );
     const repo = await this.repository.user();
     const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
@@ -77,7 +62,11 @@ export default class UserServices extends Services implements UserServicesParams
   }
 
   async authUser(id: string) {
-    await UserServices.validateId(id);
+    const data = new IdValidator(id);
+    await validateOrReject(
+      data,
+      { validationError: { target: false }, forbidUnknownValues: true },
+    );
     const repo = await this.repository.user();
     return repo.findOneOrFail({ where: { id } });
   }

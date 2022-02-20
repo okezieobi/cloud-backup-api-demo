@@ -1,7 +1,7 @@
 import {
   Entity, Column, BeforeInsert, OneToMany,
 } from 'typeorm';
-import { IsEmail, IsIn } from 'class-validator';
+import { IsEmail, IsIn, IsString } from 'class-validator';
 
 import AppEntity from './Base';
 import FileEntity from './File';
@@ -33,9 +33,11 @@ export default class UserEntity extends AppEntity {
       email: string;
 
     @Column({ nullable: false, type: 'text' })
+    @IsString()
       name: string;
 
     @Column({ nullable: false, type: 'text' })
+    @IsString()
       password: string;
 
     @Column({ type: 'text', default: 'client' })

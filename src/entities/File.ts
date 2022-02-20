@@ -1,7 +1,7 @@
 import {
   Entity, Column, ManyToOne,
 } from 'typeorm';
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsArray } from 'class-validator';
 
 import AppEntity from './Base';
 import UserEntity from './User';
@@ -11,7 +11,7 @@ export default class FileEntity extends AppEntity {
   constructor(
     id: string,
     user: UserEntity,
-    info: any[],
+    info: object[],
     isSafe: boolean = true,
     createdAt: Date = new Date(),
     updatedAt: Date = new Date(),
@@ -25,8 +25,9 @@ export default class FileEntity extends AppEntity {
     @ManyToOne(() => UserEntity, (user) => user.files)
       user: UserEntity;
 
-    @Column({ type: 'json' })
-      info: any[];
+    @Column({ type: 'json', nullable: false })
+    @IsArray()
+      info: object[];
 
     @Column({ default: 'false', type: 'boolean' })
     @IsBoolean()

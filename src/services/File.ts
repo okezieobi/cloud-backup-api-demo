@@ -1,22 +1,12 @@
-import Ajv, { JSONSchemaType } from 'ajv';
-import ajvKeywords from 'ajv-keywords';
-import ajvFormats from 'ajv-formats';
-
+import { validateOrReject } from 'class-validator';
 import { fileRepository } from '../entities';
-import Services from '.';
+import VerifyOneValidator, { VerifyOneParams } from '../validators/File.verifyOne';
+import ListFilesValidator, { ListFilesParams } from '../validators/File.list';
+import IdValidator, {} from '../validators/Id';
 
 interface FileServicesParams {
-    repository: { file: typeof fileRepository };
-}
-
-interface ListFilesParams {
-  user?: string;
-  isSafe: boolean;
-}
-
-interface verifyOneParams {
-  user?: string;
-  id: string;
+  repository: { file: typeof fileRepository };
+  validator: { file: { VerifyOne: typeof VerifyOneValidator, List: typeof ListFilesValidator }}
 }
 
 interface SaveFileParams {
@@ -24,60 +14,35 @@ interface SaveFileParams {
     info: object[];
 }
 
-const ajv = new Ajv({ allErrors: true });
-
-ajvFormats(ajv);
-ajvKeywords(ajv);
-
-export default class FileServices extends Services implements FileServicesParams {
+export default class FileServices implements FileServicesParams {
   repository: { file: typeof fileRepository };
 
-  constructor(repository = { file: fileRepository }) {
-    super();
+  validator: { file: { VerifyOne: typeof VerifyOneValidator, List: typeof ListFilesValidator }};
+
+  constructor(
+    repository = { file: fileRepository },
+    validator = { file: { VerifyOne: VerifyOneValidator, List: ListFilesValidator } },
+  ) {
     this.repository = repository;
+    this.validator = validator;
     this.saveOne = this.saveOne.bind(this);
     this.listAll = this.listAll.bind(this);
     this.verifyOne = this.verifyOne.bind(this);
   }
 
-  static async validateSaveOne(arg: SaveFileParams) {
-    const schema: JSONSchemaType<SaveFileParams> = {
-      $async: true,
-      type: 'object',
-      properties: {
-        user: { type: 'object' },
-        info: { type: 'array', minItems: 1, items: { type: 'object' } },
-      },
-      required: ['user', 'info'],
-      additionalProperties: false,
-    };
-    return ajv.compile(schema)(arg);
-  }
-
   async saveOne(arg: SaveFileParams) {
-    await FileServices.validateSaveOne(arg);
     const repo = await this.repository.file();
     const newFile = await repo.create(arg);
     await repo.save(newFile);
     return { message: 'New file successfully saved', data: { ...newFile, user: undefined } };
   }
 
-  static async validateListAll(arg: ListFilesParams) {
-    const schema: JSONSchemaType<ListFilesParams> = {
-      $async: true,
-      type: 'object',
-      properties: {
-        user: { type: 'string', nullable: true },
-        isSafe: { type: 'boolean' },
-      },
-      required: ['isSafe'],
-      additionalProperties: false,
-    };
-    return ajv.compile(schema)(arg);
-  }
-
   async listAll({ user, isSafe }: ListFilesParams) {
-    await FileServices.validateListAll({ user, isSafe });
+    const arg = new this.validator.file.List(isSafe, user);
+    await validateOrReject(
+      arg,
+      { forbidUnknownValues: true },
+    );
     const repo = await this.repository.file();
     let data: any;
     if (user == null) data = await repo.find({ where: { isSafe } });
@@ -85,8 +50,12 @@ export default class FileServices extends Services implements FileServicesParams
     return { message: 'Files retrieved successfully', data };
   }
 
-  async verifyOne({ id, user }: verifyOneParams) {
-    await FileServices.validateId(id);
+  async verifyOne({ id, user }: VerifyOneParams) {
+    const arg = new IdValidator(id);
+    await validateOrReject(
+      arg,
+      { forbidUnknownValues: true },
+    );
     const repo = await this.repository.file();
     if (user == null) return repo.findOneOrFail({ where: { id } });
     return repo.findOneOrFail({ where: { user, id } });
