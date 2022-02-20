@@ -61,3 +61,5 @@ export default class FileServices implements FileServicesParams {
     return repo.findOneOrFail({ where: { user, id } });
   }
 }
+
+export { SaveFileParams };

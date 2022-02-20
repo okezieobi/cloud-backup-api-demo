@@ -2,7 +2,7 @@ import { userRepository } from '../entities';
 import UserServices from '../services/User';
 
 describe('User tests', () => {
-  jest.useFakeTimers('legacy');
+  // jest.useFakeTimers('legacy');
 
   const user = {
     name: 'test-username',

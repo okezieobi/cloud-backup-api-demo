@@ -21,10 +21,10 @@ export default class FileController extends Controller implements FileController
     this.verifyOneForAdmin = this.verifyOneForAdmin.bind(this);
   }
 
-  saveOne({ body }: Request, res: Response, next: NextFunction) {
+  saveOne({ body: { info } }: Request, res: Response, next: NextFunction) {
     const { saveOne } = new this.Service();
     return this.handleService({
-      method: saveOne, res, next, status: 201, arg: { ...body, user: res.locals.user },
+      method: saveOne, res, next, status: 201, arg: { info, user: res.locals.user },
     });
   }
 

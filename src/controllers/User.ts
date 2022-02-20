@@ -44,10 +44,10 @@ export default class UserController extends Controller implements UserController
     }
   }
 
-  signupUser({ body }: Request, res: Response, next: NextFunction) {
+  signupUser({ body: { email, name, password } }: Request, res: Response, next: NextFunction) {
     const { signupUser } = new this.Service();
     return this.handleService({
-      method: signupUser, res, next, arg: body, status: 201,
+      method: signupUser, res, next, arg: { email, name, password }, status: 201,
     });
   }
 
