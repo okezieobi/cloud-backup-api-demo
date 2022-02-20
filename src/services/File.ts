@@ -2,11 +2,16 @@ import { validateOrReject } from 'class-validator';
 import { fileRepository } from '../entities';
 import VerifyOneValidator, { VerifyOneParams } from '../validators/File.verifyOne';
 import ListFilesValidator, { ListFilesParams } from '../validators/File.list';
-import IdValidator, {} from '../validators/Id';
+import IdValidator from '../validators/Id';
 
 interface FileServicesParams {
   repository: { file: typeof fileRepository };
-  validator: { file: { VerifyOne: typeof VerifyOneValidator, List: typeof ListFilesValidator }}
+  validator: {
+    file: {
+      VerifyOne: typeof VerifyOneValidator,
+      List: typeof ListFilesValidator,
+    }
+  }
 }
 
 interface SaveFileParams {
@@ -14,20 +19,36 @@ interface SaveFileParams {
     info: object[];
 }
 
+interface UpdateFileParams {
+  file: { isSafe: boolean, id: string };
+  isSafe: boolean;
+}
+
 export default class FileServices implements FileServicesParams {
   repository: { file: typeof fileRepository };
 
-  validator: { file: { VerifyOne: typeof VerifyOneValidator, List: typeof ListFilesValidator }};
+  validator: {
+    file: {
+      VerifyOne: typeof VerifyOneValidator,
+      List: typeof ListFilesValidator,
+    }
+  };
 
   constructor(
     repository = { file: fileRepository },
-    validator = { file: { VerifyOne: VerifyOneValidator, List: ListFilesValidator } },
+    validator = {
+      file: {
+        VerifyOne: VerifyOneValidator,
+        List: ListFilesValidator,
+      },
+    },
   ) {
     this.repository = repository;
     this.validator = validator;
     this.saveOne = this.saveOne.bind(this);
     this.listAll = this.listAll.bind(this);
     this.verifyOne = this.verifyOne.bind(this);
+    this.updateSafeProp = this.updateSafeProp.bind(this);
   }
 
   async saveOne(arg: SaveFileParams) {
@@ -59,6 +80,16 @@ export default class FileServices implements FileServicesParams {
     const repo = await this.repository.file();
     if (user == null) return repo.findOneOrFail({ where: { id } });
     return repo.findOneOrFail({ where: { user, id } });
+  }
+
+  async updateSafeProp({ file, isSafe }: UpdateFileParams) {
+    const repo = await this.repository.file();
+    const placeHolder = file;
+    placeHolder.isSafe = isSafe ?? placeHolder.isSafe;
+    await repo.save(placeHolder);
+    if (isSafe) return { message: 'File safe property ie isSafe updated to true', data: placeHolder };
+    await repo.delete({ id: placeHolder.id });
+    return { message: 'File safe property ie isSafe updated to false, file automatically deleted' };
   }
 }
 

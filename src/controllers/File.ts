@@ -11,7 +11,7 @@ interface FileControllerParams {
 export default class FileController extends Controller implements FileControllerParams {
   Service: typeof FileServices;
 
-  constructor(Service = FileServices, key = 'files') {
+  constructor(Service = FileServices, key = 'file(s)') {
     super(key);
     this.Service = Service;
     this.saveOne = this.saveOne.bind(this);
@@ -19,6 +19,7 @@ export default class FileController extends Controller implements FileController
     this.listAllForAdmin = this.listAllForAdmin.bind(this);
     this.verifyOne = this.verifyOne.bind(this);
     this.verifyOneForAdmin = this.verifyOneForAdmin.bind(this);
+    this.updateSafeProp = this.updateSafeProp.bind(this);
   }
 
   saveOne({ body: { info } }: Request, res: Response, next: NextFunction) {
@@ -56,8 +57,15 @@ export default class FileController extends Controller implements FileController
     });
   }
 
+  updateSafeProp({ body: { isSafe } }: Request, res: Response, next: NextFunction) {
+    const { updateSafeProp } = new this.Service();
+    return this.handleService({
+      method: updateSafeProp, res, next, arg: { isSafe: (`${isSafe}`.toLowerCase() === 'true'), file: res.locals['file(s)'] },
+    });
+  }
+
   static getOne(req: Request, res: Response, next: NextFunction) {
-    res.locals.files = { message: 'File successfully retrieved', data: res.locals.files };
+    res.locals.files = { message: 'File successfully retrieved', data: res.locals['file(s)'] };
     next();
   }
 }

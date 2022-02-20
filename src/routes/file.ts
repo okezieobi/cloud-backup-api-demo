@@ -4,7 +4,7 @@ import Controller from '../controllers/File';
 import fileUploader from '../controllers/fileUploader';
 
 const {
-  saveOne, listAllForAdmin, listAll, dispatchResponse, verifyOne, verifyOneForAdmin,
+  saveOne, listAllForAdmin, listAll, dispatchResponse, verifyOne, verifyOneForAdmin, updateSafeProp,
 } = new Controller();
 
 const router = Router();
@@ -19,5 +19,6 @@ router.get('/:id', Controller.getOne, dispatchResponse);
 adminRouter.get('/', listAllForAdmin, dispatchResponse);
 adminRouter.use('/:id', verifyOneForAdmin);
 adminRouter.get('/:id', Controller.getOne, dispatchResponse);
+adminRouter.put('/:id', updateSafeProp, dispatchResponse);
 
 export default { router, adminRouter };

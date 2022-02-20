@@ -1,11 +1,16 @@
 paths:
-  /files/{id}:                # path of the user from your endpoint
-    get:                 # endpoint request type (post request)
+  /all_files/{id}:                # path of the user from your endpoint
+    put:                 # endpoint request type (post request)
       tags:               # Tag property
         - File            # Value of the tag
-      summary: gets associated file of an authenticated user by its id
+      summary: update file safe property ie isSafe of any user by its id as an authenticated admin
       security:
        - headerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_file'
       parameters:
         - name: id
           in: path
@@ -19,3 +24,11 @@ paths:
           description: Error message object in error property of response body
         404:
           description: Error message object in error property of response body
+components:        # Schema definition for request body
+ schemas:
+  update_file:
+    type: object
+    properties:
+      isSafe:
+        type: boolean
+        example: true
