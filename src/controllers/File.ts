@@ -1,14 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-import Controller from '.';
+import Controller, { ControllerParam } from '.';
 import FileServices from '../services/File';
 
-interface FileControllerParams {
+interface FileControllerParam extends ControllerParam {
     Service: typeof FileServices;
-    key: string;
 }
 
-export default class FileController extends Controller implements FileControllerParams {
+export default class FileController extends Controller implements FileControllerParam {
   Service: typeof FileServices;
 
   constructor(Service = FileServices, key = 'file(s)') {

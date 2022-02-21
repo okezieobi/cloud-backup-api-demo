@@ -1,7 +1,7 @@
 import {
   Entity, Column, ManyToOne,
 } from 'typeorm';
-import { IsBoolean, IsArray } from 'class-validator';
+import { IsBoolean, IsArray, ArrayNotEmpty } from 'class-validator';
 
 import AppEntity from './Base';
 import UserEntity from './User';
@@ -27,6 +27,7 @@ export default class FileEntity extends AppEntity {
 
     @Column({ type: 'json', nullable: false })
     @IsArray()
+    @ArrayNotEmpty()
       info: object[];
 
     @Column({ default: 'false', type: 'boolean' })

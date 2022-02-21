@@ -14,7 +14,11 @@ interface ServiceResult {
     data: object;
 }
 
-export default abstract class Controller {
+interface ControllerParam {
+  key: string;
+}
+
+export default abstract class Controller implements ControllerParam {
   key: string;
 
   constructor(key: string = 'main') {
@@ -47,3 +51,5 @@ export default abstract class Controller {
     } else res.status(201).send({ status: 'success', message: 'File uploaded successfully', data: files });
   }
 }
+
+export { ControllerParam };

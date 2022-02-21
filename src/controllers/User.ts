@@ -1,20 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 import { Request, Response, NextFunction } from 'express';
 
-import Controller from '.';
+import Controller, { ControllerParam } from '.';
 import UserServices from '../services/User';
 import JWT from '../utils/Jwt';
 
-interface UserControllerParams {
-    Service: typeof UserServices;
-    Jwt: typeof JWT;
-    key: string;
+interface UserControllerParams extends ControllerParam {
+  Jwt: typeof JWT;
+  Service: typeof UserServices;
 }
 
 export default class UserController extends Controller implements UserControllerParams {
-  Service: typeof UserServices;
-
   Jwt: typeof JWT;
+
+  Service: typeof UserServices;
 
   constructor(Service = UserServices, Jwt = JWT, key = 'user') {
     super(key);
