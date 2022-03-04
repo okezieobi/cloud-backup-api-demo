@@ -1,11 +1,13 @@
 import { IsEmail, IsString } from 'class-validator';
 
+import Validator from '.';
+
 interface LoginParams {
     email: string;
     password: string;
 }
 
-export default class LoginValidator implements LoginParams {
+export default class LoginValidator extends Validator implements LoginParams {
     @IsEmail()
       email: string;
 
@@ -13,6 +15,7 @@ export default class LoginValidator implements LoginParams {
       password: string;
 
     constructor(email: string, password: string) {
+      super();
       this.email = email;
       this.password = password;
     }

@@ -1,5 +1,3 @@
-import { validateOrReject } from 'class-validator';
-
 import { userRepository } from '../entities';
 import LoginValidator, { LoginParams } from '../validators/User.login';
 import IdValidator from '../validators/Id';
@@ -50,11 +48,8 @@ export default class UserServices implements UserServicesParams {
   }
 
   async loginUser({ email, password }: LoginParams) {
-    const arg = new this.validator.user.Login(email, password);
-    await validateOrReject(
-      arg,
-      { validationError: { target: false }, forbidUnknownValues: true },
-    );
+    await new this.validator.user.Login(email, password)
+      .validate({ validationError: { target: false }, forbidUnknownValues: true });
     const repo = await this.repository.user();
     const userExists = await repo.findOneOrFail({ where: { email } });
     await userExists.validatePassword(password);
@@ -62,11 +57,8 @@ export default class UserServices implements UserServicesParams {
   }
 
   async authUser(id: string) {
-    const data = new IdValidator(id);
-    await validateOrReject(
-      data,
-      { validationError: { target: false }, forbidUnknownValues: true },
-    );
+    await new IdValidator(id)
+      .validate({ validationError: { target: false }, forbidUnknownValues: true });
     const repo = await this.repository.user();
     return repo.findOneOrFail({ where: { id } });
   }

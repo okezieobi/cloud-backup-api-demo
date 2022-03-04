@@ -1,4 +1,3 @@
-import { validateOrReject } from 'class-validator';
 import { fileRepository } from '../entities';
 import VerifyOneValidator, { VerifyOneParams } from '../validators/File.verifyOne';
 import ListFilesValidator, { ListFilesParams } from '../validators/File.list';
@@ -59,11 +58,7 @@ export default class FileServices implements FileServicesParams {
   }
 
   async listAll({ user, isSafe }: ListFilesParams) {
-    const arg = new this.validator.file.List(isSafe, user);
-    await validateOrReject(
-      arg,
-      { forbidUnknownValues: true },
-    );
+    await new this.validator.file.List(isSafe, user).validate({ forbidUnknownValues: true });
     const repo = await this.repository.file();
     let data;
     if (user == null) data = await repo.find({ where: { isSafe } });
@@ -72,11 +67,7 @@ export default class FileServices implements FileServicesParams {
   }
 
   async verifyOne({ id, user }: VerifyOneParams) {
-    const arg = new IdValidator(id);
-    await validateOrReject(
-      arg,
-      { forbidUnknownValues: true },
-    );
+    await new IdValidator(id).validate({ forbidUnknownValues: true });
     const repo = await this.repository.file();
     if (user == null) return repo.findOneOrFail({ where: { id } });
     return repo.findOneOrFail({ where: { user, id } });
