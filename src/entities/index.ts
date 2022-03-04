@@ -16,7 +16,7 @@ const connection = async () => {
     entities: [UserEntity, FileEntity],
   };
   try {
-    initializedConnection = await getConnection();
+    initializedConnection = getConnection();
   } catch (e) {
     initializedConnection = await createConnection(options);
   }
@@ -24,12 +24,12 @@ const connection = async () => {
 };
 
 const userRepository = async () => {
-  const resolvedConnection = await await connection();
+  const resolvedConnection = await connection();
   return resolvedConnection.getRepository(UserEntity);
 };
 
 const fileRepository = async () => {
-  const resolvedConnection = await await connection();
+  const resolvedConnection = await connection();
   return resolvedConnection.getRepository(FileEntity);
 };
 
